@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Admin</title>
+    <th:block th:replace="~{fragments/admin/index.html :: headerFiles}">
+    </th:block>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <header th:replace="~{fragments/admin/index.html :: page-header}"></header>
+
+        <aside th:replace="~{fragments/admin/index.html :: page-aside}"></aside>
+
+        <div layout:fragment="content"></div>
+
+        <div th:replace="~{fragments/admin/index.html :: page-footer}"></div>
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery 3 -->
+    <script th:src="@{/assets/admin/js/jquery.min.js}"></script>
+    <script th:src="@{/assets/admin/js/jquery-ui.js}"></script>
+    <script th:src="@{/assets/admin/js/bootstrap.min.js}"></script>
+    <script th:src="@{/assets/admin/js/adminlte.min.js}"></script>
+    <script th:src="@{/assets/admin/js/dashboard.js}"></script>
+    <script th:src="@{/assets/admin/tinymce/tinymce.min.js}"></script>
+    <script th:src="@{/assets/admin/tinymce/config.js}"></script>
+    <script th:src="@{/assets/admin/js/function.js}"></script>
+</body>
+</html>

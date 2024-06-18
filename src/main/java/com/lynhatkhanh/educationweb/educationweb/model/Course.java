@@ -65,6 +65,22 @@ public class Course {
         this.title = title;
     }
 
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
+    public Instructor getTheInstructor() {
+        return theInstructor;
+    }
+
+    public void setTheInstructor(Instructor theInstructor) {
+        this.theInstructor = theInstructor;
+    }
+
     // =========== define toString() ===========
 
 
