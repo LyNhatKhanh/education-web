@@ -6,6 +6,8 @@ import com.lynhatkhanh.educationweb.educationweb.service.CourseService;
 import com.lynhatkhanh.educationweb.educationweb.service.InstructorService;
 import org.h2.engine.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +40,20 @@ public class AdminController {
 
      /* ============================== Course ============================== */
     @GetMapping("/course")
-    public String showCourse(Model theModel){
-        List<Course> listCourses = courseService.findAll();
-        theModel.addAttribute("courses", listCourses);
+    public String showCourse(Model theModel,
+                             @Param("keyword") String keyword,
+                             @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo){
+        Page<Course> listCourse = courseService.getAll(pageNo);
+
+        if(keyword != null) {
+            listCourse = courseService.searchCourse(keyword, pageNo);
+            theModel.addAttribute("keyword", keyword);
+        }
+
+        theModel.addAttribute("totalPage", listCourse.getTotalPages());
+        theModel.addAttribute("currentPage", pageNo);
+        theModel.addAttribute("courses", listCourse);
+
         return "admin/course";
     }
 
