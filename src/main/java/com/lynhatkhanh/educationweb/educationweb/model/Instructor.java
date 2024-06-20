@@ -3,6 +3,7 @@ package com.lynhatkhanh.educationweb.educationweb.model;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -48,9 +49,19 @@ public class Instructor extends People{
         this.courses = courses;
     }
 
+    // add convenient method for bidirectional relationship
+    public void add(Course theCourse) {
+        if (courses == null)
+            courses = new ArrayList<>();
+
+        // add course to collection
+        courses.add(theCourse);
+
+        // set instructor for theCourse
+        theCourse.setTheInstructor(this);
+    }
 
     // =========== define toString() ===========
-
 
     @Override
     public String toString() {
