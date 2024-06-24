@@ -57,7 +57,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Page<Course> getAll(Integer pageNo) {
-        Pageable pageable = PageRequest.of(pageNo-1,10);
+        Pageable pageable = PageRequest.of(pageNo-1,2);
 
         return courseRepository.findAll(pageable);
     }
@@ -71,13 +71,13 @@ public class CourseServiceImpl implements CourseService {
     public Page<Course> searchCourse(String keyword, Integer pageNo) {
         List<Course> listCourse = courseRepository.searchCourse(keyword);
 
-        Pageable pageable = PageRequest.of(pageNo-1,10);
+        Pageable pageable = PageRequest.of(pageNo-1,2);
 
-        long  start = pageable.getOffset();
-        long end = (pageable.getOffset() + pageable.getPageSize()) > listCourse.size() ? listCourse.size() : (pageable.getOffset() + pageable.getPageSize());
+        Integer start = (int) pageable.getOffset();
+        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > listCourse.size() ? listCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
 
-        listCourse = listCourse.subList((int) start, (int) end);
+        listCourse = listCourse.subList(start, end);
 
-        return new PageImpl<Course>(listCourse, pageable, listCourse.size());
+        return new PageImpl<Course>(listCourse, pageable, courseRepository.searchCourse(keyword).size());
     }
 }

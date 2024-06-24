@@ -7,12 +7,12 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "people")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class People {
 
     // =========== define fields ===========
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     @NotNull(message = "is required")
     private int id;
@@ -38,10 +38,9 @@ public class People {
     @Column(name = "modifiedby")
     private String modifiedBy;
 
-    /*
-    * TODO: match to Role Entity
-    *  */
-    private String role;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_name")
+    private Member memberId;
 
 
     // =========== define constructors ===========
@@ -132,8 +131,16 @@ public class People {
         this.modifiedBy = modifiedBy;
     }
 
+    public Member getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Member memberId) {
+        this.memberId = memberId;
+    }
 
     // =========== define toString() ===========
+
 
     @Override
     public String toString() {
@@ -146,6 +153,7 @@ public class People {
                 ", modifiedDate=" + modifiedDate +
                 ", createBy='" + createBy + '\'' +
                 ", modifiedBy='" + modifiedBy + '\'' +
+                ", memberId=" + memberId +
                 '}';
     }
 }

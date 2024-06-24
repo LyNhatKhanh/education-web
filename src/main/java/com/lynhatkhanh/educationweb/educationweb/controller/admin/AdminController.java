@@ -45,7 +45,7 @@ public class AdminController {
                              @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo){
         Page<Course> listCourse = courseService.getAll(pageNo);
 
-        if(keyword != null) {
+        if (keyword != null) {
             listCourse = courseService.searchCourse(keyword, pageNo);
             theModel.addAttribute("keyword", keyword);
         }
