@@ -3,6 +3,7 @@ package com.lynhatkhanh.educationweb.educationweb.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,6 +38,13 @@ public class Course {
                     CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "instructor_id")
     private Instructor theInstructor;
+
+    @OneToMany(
+            mappedBy = "courseId",
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE,
+                    CascadeType.PERSIST, CascadeType.REFRESH})
+    private List<Lecture> listLecture;
 
     // =========== define constructors ===========
 
@@ -79,6 +87,22 @@ public class Course {
 
     public void setTheInstructor(Instructor theInstructor) {
         this.theInstructor = theInstructor;
+    }
+
+    public List<Lecture> getListLecture() {
+        return listLecture;
+    }
+
+    public void setListLecture(List<Lecture> listLecture) {
+        this.listLecture = listLecture;
+    }
+
+    // add convenient method for bidirectional relationship
+    public void addLecture(Lecture lecture) {
+        if (listLecture == null)
+            listLecture = new ArrayList<>();
+        listLecture.add(lecture);
+        lecture.setCourseId(this);
     }
 
     // =========== define toString() ===========

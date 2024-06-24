@@ -50,7 +50,7 @@ public class Instructor extends People{
     }
 
     // add convenient method for bidirectional relationship
-    public void add(Course theCourse) {
+    public void addCourse(Course theCourse) {
         if (courses == null)
             courses = new ArrayList<>();
 

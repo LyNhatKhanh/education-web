@@ -3,10 +3,14 @@ package com.lynhatkhanh.educationweb.educationweb.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "role")
 public class Role {
 
     @Id
-    @ManyToOne
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE,
+                    CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
     private Member memberId;
 

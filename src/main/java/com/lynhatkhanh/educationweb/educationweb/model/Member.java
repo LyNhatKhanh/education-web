@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "member")
 public class Member {
 
     @Id
@@ -19,8 +20,12 @@ public class Member {
     @Column(name = "active")
     private int active;
 
-    @Column(name = "people_id")
-    private int peopleId;
+    @OneToOne(
+            mappedBy = "memberId",
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.REFRESH,
+                    CascadeType.MERGE, CascadeType.PERSIST})
+    private People peopleId;
 
     @OneToMany(mappedBy = "memberId")
     private List<Role> roles;
@@ -28,11 +33,10 @@ public class Member {
     public Member() {
     }
 
-    public Member(String userId, String password, int active, int peopleId) {
+    public Member(String userId, String password, int active) {
         this.userId = userId;
         this.password = password;
         this.active = active;
-        this.peopleId = peopleId;
     }
 
     public String getUserId() {
@@ -59,25 +63,25 @@ public class Member {
         this.active = active;
     }
 
-    public int getPeopleId() {
+    public People getPeopleId() {
         return peopleId;
     }
 
-    public void setPeopleId(int peopleId) {
+    public void setPeopleId(People peopleId) {
         this.peopleId = peopleId;
     }
 
-    public List<Role> getTheRole() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setTheRole(List<Role> theRole) {
-        this.roles = theRole;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     // add convenient method for bidirectional relationship
     public void addRole(Role role) {
-        if(roles == null)
+        if (roles == null)
             roles = new ArrayList<>();
         roles.add(role);
         role.setMemberId(this);
