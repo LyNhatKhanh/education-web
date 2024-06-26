@@ -1,6 +1,8 @@
 package com.lynhatkhanh.educationweb.educationweb.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +14,11 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
+    @Size(min = 1, message = "User name is required")
     private String userId;
 
     @Column(name = "password")
+    @Size(min = 1, message = "User name is required")
     private String password;
 
     @Column(name = "active")

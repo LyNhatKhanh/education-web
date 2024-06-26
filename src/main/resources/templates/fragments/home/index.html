@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org/">
+<html lang="en"  xmlns:th="http://www.thymeleaf.org/"
+      xmlns:sec="http://thymeleaf.org/extras/spring-security">
 <head th:fragment="headerFiles">
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -23,22 +24,17 @@
   <link th:href="@{/assets/home/vendor/glightbox/css/glightbox.min.css}" rel="stylesheet">
   <link th:href="@{/assets/home/vendor/swiper/swiper-bundle.min.css}" rel="stylesheet">
 
-  <!-- Main CSS File -->
-  <link th:href="@{/assets/home/css/main.css}" rel="stylesheet">
+  <!-- Main CSS Files -->
+  <link th:href="@{/assets/home/css/style.css}" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: Mentor
-  * Template URL: https://bootstrapmade.com/mentor-free-education-bootstrap-theme/
-  * Updated: Jun 14 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+
+
 </head>
 <body>
 <header id="header" class="header d-flex align-items-center sticky-top" th:fragment="page-header">
-  <div class="container-fluid container-xl position-relative d-flex align-items-center">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
 
-    <a href="index.html" class="logo d-flex align-items-center me-auto">
+    <a th:href="@{index.html}" class="logo d-flex align-items-center me-auto">
       <!-- Uncomment the line below if you also wish to use an image logo -->
       <!-- <img src="assets/img/logo.png" alt=""> -->
       <h1 class="sitename">Mentor</h1>
@@ -46,37 +42,79 @@
 
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li><a href="index.html" class="active">Home<br></a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="courses.html">Courses</a></li>
-        <li><a href="trainers.html">Trainers</a></li>
-        <li><a href="events.html">Events</a></li>
-        <li><a href="pricing.html">Pricing</a></li>
-        <li class="dropdown"><a href="#"><span>Dropdown</span> <i
-                class="bi bi-chevron-down toggle-dropdown"></i></a>
-          <ul>
-            <li><a href="#">Dropdown 1</a></li>
-            <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i
-                    class="bi bi-chevron-down toggle-dropdown"></i></a>
-              <ul>
-                <li><a href="#">Deep Dropdown 1</a></li>
-                <li><a href="#">Deep Dropdown 2</a></li>
-                <li><a href="#">Deep Dropdown 3</a></li>
-                <li><a href="#">Deep Dropdown 4</a></li>
-                <li><a href="#">Deep Dropdown 5</a></li>
-              </ul>
-            </li>
-            <li><a href="#">Dropdown 2</a></li>
-            <li><a href="#">Dropdown 3</a></li>
-            <li><a href="#">Dropdown 4</a></li>
-          </ul>
+        <li><a th:href="@{/index.html}" class="active">Home<br></a></li>
+        <li><a th:href="@{/about.html}">About</a></li>
+        <li><a th:href="@{/courses.html}">Courses</a></li>
+        <li><a th:href="@{/trainers.html}">Trainers</a></li>
+        <!--        <li class="dropdown"><a th:href="@{#}"><span>Dropdown</span> <i-->
+        <!--                class="bi bi-chevron-down toggle-dropdown"></i></a>-->
+        <!--          <ul>-->
+        <!--            <li><a th:href="@{#}">Dropdown 1</a></li>-->
+        <!--            <li class="dropdown"><a th:href="@{#}"><span>Deep Dropdown</span> <i-->
+        <!--                    class="bi bi-chevron-down toggle-dropdown"></i></a>-->
+        <!--              <ul>-->
+        <!--                <li><a th:href="@{#}">Deep Dropdown 1</a></li>-->
+        <!--                <li><a th:href="@{#}">Deep Dropdown 2</a></li>-->
+        <!--                <li><a th:href="@{#}">Deep Dropdown 3</a></li>-->
+        <!--                <li><a th:href="@{#}">Deep Dropdown 4</a></li>-->
+        <!--                <li><a th:href="@{#}">Deep Dropdown 5</a></li>-->
+        <!--              </ul>-->
+        <!--            </li>-->
+        <!--            <li><a th:href="@{#}">Dropdown 2</a></li>-->
+        <!--            <li><a th:href="@{#}">Dropdown 3</a></li>-->
+        <!--            <li><a th:href="@{#}">Dropdown 4</a></li>-->
+        <!--          </ul>-->
+        <!--        </li>-->
+        <li><a th:href="@{/contact.html}">Contact</a></li>
+        <li sec:authorize="!isAuthenticated()">
+            <a th:href="@{/showMyLoginPage}" style="color: darkgray">Login</a>
         </li>
-        <li><a href="contact.html">Contact</a></li>
+        <!-- User Account: style can be found in dropdown.less -->
+        <li class="nav navbar-nav">
+          <div sec:authorize="isAuthenticated()" class="dropdown user user-menu">
+            <a th:href="@{#}" class="authentication navmenu dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+               style="color: gray">
+              Hello, <span class="hidden-xs" sec:authentication="principal.username"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img th:src="@{/assets/admin/images/user2-160x160.jpg}" class="img-circle" alt="User Image">
+                <p>
+                  <span sec:authentication="principal.username"></span> - <span sec:authentication="principal.authorities"}></span>
+                  <small>Member since Nov. 2012</small>
+                </p>
+              </li>
+
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a th:href="@{#}" class="btn btn-default btn-flat border">Profile</a>
+                  <a th:href="@{/admin}" class="btn btn-default btn-flat border"
+                     th:if="${#authorization.expression('hasRole(''ADMIN'')') || #authorization.expression('hasRole(''INSTRUCTOR'')')}">Admin</a>
+                </div>
+<!--                <div class="pull-left" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">-->
+<!--                  <a th:href="@{/admin}" class="btn btn-default btn-flat border">Admin</a>-->
+<!--                </div>-->
+                <div class="pull-right">
+                  <form action="#" th:action="@{/logout}" method="post" class="btn btn-default btn-flat">
+                    <input type="submit" value="Logout">
+                  </form>
+                </div>
+
+              </li>
+            </ul>
+          </div>
+        </li>
+
       </ul>
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
 
-    <a class="btn-getstarted" href="courses.html">Get Started</a>
+
+
+
+    <a class="btn-getstarted" th:href="@{/courses.html}" style="margin-left: 20px">Get Started</a>
+
 
   </div>
 </header>
@@ -86,7 +124,7 @@
   <div class="container footer-top">
     <div class="row gy-4">
       <div class="col-lg-4 col-md-6 footer-about">
-        <a href="index.html" class="logo d-flex align-items-center">
+        <a th:href="@{/index.html}" class="logo d-flex align-items-center">
           <span class="sitename">Mentor</span>
         </a>
         <div class="footer-contact pt-3">
@@ -96,32 +134,32 @@
           <p><strong>Email:</strong> <span>info@example.com</span></p>
         </div>
         <div class="social-links d-flex mt-4">
-          <a href=""><i class="bi bi-twitter-x"></i></a>
-          <a href=""><i class="bi bi-facebook"></i></a>
-          <a href=""><i class="bi bi-instagram"></i></a>
-          <a href=""><i class="bi bi-linkedin"></i></a>
+          <a th:href="@{#}"><i class="bi bi-twitter-x"></i></a>
+          <a th:href="@{#}"><i class="bi bi-facebook"></i></a>
+          <a th:href="@{#}"><i class="bi bi-instagram"></i></a>
+          <a th:href="@{#}"><i class="bi bi-linkedin"></i></a>
         </div>
       </div>
 
       <div class="col-lg-2 col-md-3 footer-links">
         <h4>Useful Links</h4>
         <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">About us</a></li>
-          <li><a href="#">Services</a></li>
-          <li><a href="#">Terms of service</a></li>
-          <li><a href="#">Privacy policy</a></li>
+          <li><a th:href="@{#}">Home</a></li>
+          <li><a th:href="@{#}">About us</a></li>
+          <li><a th:href="@{#}">Services</a></li>
+          <li><a th:href="@{#}">Terms of service</a></li>
+          <li><a th:href="@{#}">Privacy policy</a></li>
         </ul>
       </div>
 
       <div class="col-lg-2 col-md-3 footer-links">
         <h4>Our Services</h4>
         <ul>
-          <li><a href="#">Web Design</a></li>
-          <li><a href="#">Web Development</a></li>
-          <li><a href="#">Product Management</a></li>
-          <li><a href="#">Marketing</a></li>
-          <li><a href="#">Graphic Design</a></li>
+          <li><a th:href="@{#}">Web Design</a></li>
+          <li><a th:href="@{#}">Web Development</a></li>
+          <li><a th:href="@{#}">Product Management</a></li>
+          <li><a th:href="@{#}">Marketing</a></li>
+          <li><a th:href="@{#}">Graphic Design</a></li>
         </ul>
       </div>
 
@@ -147,7 +185,7 @@
       <!-- You can delete the links only if you've purchased the pro version. -->
       <!-- Licensing information: https://bootstrapmade.com/license/ -->
       <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      Designed by <a th:href="@{https://bootstrapmade.com/}">BootstrapMade</a>
     </div>
   </div>
 

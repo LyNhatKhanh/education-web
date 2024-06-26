@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <title>Title</title>
+    <meta charset="UTF-8">
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Home</title>
     <th:block th:replace="~{fragments/home/index.html :: headerFiles}">
     </th:block>
 </head>
@@ -33,7 +34,12 @@
     <script th:src="@{/assets/home/vendor/swiper/swiper-bundle.min.js}"></script>
 
     <!-- Main JS File -->
-    <script th:src="@{assets/home/js/main.js}"></script>
+    <script th:src="@{/assets/home/js/main.js}"></script>
+
+    <!-- jQuery 3 -->
+    <script th:src="@{/assets/admin/js/jquery.min.js}"></script>
+    <script th:src="@{/assets/admin/js/bootstrap.min.js}"></script>
+
 
 </body>
 </html>

@@ -40,3 +40,14 @@
 .table-action a.label{
 	margin-left: 5px
 }
+
+#back-to-home {
+	height: 50px;
+	align-content: center;
+	background-color: transparent;
+	border-color: transparent;
+}
+
+#back-to-home:hover {
+	background-color: #367fa9;
+}
