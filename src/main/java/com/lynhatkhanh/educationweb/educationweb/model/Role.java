@@ -2,51 +2,66 @@ package com.lynhatkhanh.educationweb.educationweb.model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "role")
 public class Role {
 
     @Id
-    @ManyToOne(
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.DETACH, CascadeType.MERGE,
-                    CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "user_id")
-    private Member memberId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
 
-    @Column(name = "role")
-    private String role;
+    @Column(name = "name")
+    private String name;
 
-    public Role(Member memberId, String role) {
-        this.memberId = memberId;
-        this.role = role;
-    }
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "role")
+    private Set<UserRole> roleUser;
+
+    // =============== constructor ===============
 
     public Role() {
-
     }
 
-    public Member getMemberId() {
-        return memberId;
+    public Role(String name) {
+        this.name = name;
     }
 
-    public void setMemberId(Member memberId) {
-        this.memberId = memberId;
+    // =============== getter / setter ===============
+
+    public int getId() {
+        return id;
     }
 
-    public String getRole() {
-        return role;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public String toString() {
-        return "Role{" +
-                "memberId=" + memberId +
-                ", role='" + role + '\'' +
-                '}';
+    public void setName(String name) {
+        this.name = name;
     }
+
+    public Set<UserRole> getRoleUser() {
+        return roleUser;
+    }
+
+    public void setRoleUser(Set<UserRole> roleUser) {
+        this.roleUser = roleUser;
+    }
+
+
+    // =============== convenient method - bidirectional relationship ===============
+
+
+    // =============== toString() ===============
+
+
+
 }

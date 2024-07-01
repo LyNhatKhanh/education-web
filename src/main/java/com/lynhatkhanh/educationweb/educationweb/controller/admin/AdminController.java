@@ -1,34 +1,34 @@
 package com.lynhatkhanh.educationweb.educationweb.controller.admin;
 
 import com.lynhatkhanh.educationweb.educationweb.model.Course;
-import com.lynhatkhanh.educationweb.educationweb.model.Instructor;
+import com.lynhatkhanh.educationweb.educationweb.model.CustomUserDetail;
 import com.lynhatkhanh.educationweb.educationweb.service.CourseService;
-import com.lynhatkhanh.educationweb.educationweb.service.InstructorService;
-import org.h2.engine.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     private CourseService courseService;
-    private InstructorService instructorService;
+//    private InstructorService instructorService;
 
     @Autowired
-    public AdminController(CourseService courseService, InstructorService instructorService) {
+    public AdminController(CourseService courseService) {
         this.courseService = courseService;
-        this.instructorService = instructorService;
     }
 
     @GetMapping({"/index", "/index.html", ""})
-    public String showIndex() {
+    public String showIndex(Model model) {
+        CustomUserDetail user =  (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("user", user);
         return "admin/index";
     }
 
@@ -57,52 +57,52 @@ public class AdminController {
         return "admin/course";
     }
 
-    @GetMapping("/course/showFormForAdd")
-    public String showFormAddCourse(Model theModel) {
+//    @GetMapping("/course/showFormForAdd")
+//    public String showFormAddCourse(Model theModel) {
+//
+//        Course theCourse = new Course();
+//        List<Instructor> listInstructor = instructorService.findAll();
+//
+//        theModel.addAttribute("course", theCourse);
+//        theModel.addAttribute("instructors", listInstructor);
+//
+//        return "admin/form/course-form";
+//    }
 
-        Course theCourse = new Course();
-        List<Instructor> listInstructor = instructorService.findAll();
+//    @GetMapping("/course/showFormForUpdate")
+//    public String showFormUpdateCourse(@RequestParam("courseId") int theId, Model theModel) {
+//
+//        List<Instructor> listInstructor = instructorService.findAll();
+//
+//        // find entity
+//        Course theCourse = courseService.findById(theId);
+//
+//        // send entity to template
+//        theModel.addAttribute("course", theCourse);
+//        theModel.addAttribute("instructors", listInstructor);
+//
+//        return "admin/form/course-form";
+//    }
 
-        theModel.addAttribute("course", theCourse);
-        theModel.addAttribute("instructors", listInstructor);
-
-        return "admin/form/course-form";
-    }
-
-    @GetMapping("/course/showFormForUpdate")
-    public String showFormUpdateCourse(@RequestParam("courseId") int theId, Model theModel) {
-
-        List<Instructor> listInstructor = instructorService.findAll();
-
-        // find entity
-        Course theCourse = courseService.findById(theId);
-
-        // send entity to template
-        theModel.addAttribute("course", theCourse);
-        theModel.addAttribute("instructors", listInstructor);
-
-        return "admin/form/course-form";
-    }
-
-    @PostMapping("/course/save")
-    public String saveCourse(@ModelAttribute("course") Course theCourse) {
-
-        // save entity
-        courseService.save(theCourse);
-
-        // use a redirect to /admin/course - to prevent duplicate submissions (reload confirmation site)
-        return "redirect:/admin/course";
-    }
-
-    @GetMapping("/course/deleteEmployee")
-    public String deleteCourse(@RequestParam("courseId") int theId) {
-
-        // delete entity
-        courseService.deleteById(theId);
-
-        // use a redirect to /admin/course - to prevent duplicate submissions (reload confirmation site)
-        return "redirect:/admin/course";
-    }
+//    @PostMapping("/course/save")
+//    public String saveCourse(@ModelAttribute("course") Course theCourse) {
+//
+//        // save entity
+//        courseService.save(theCourse);
+//
+//        // use a redirect to /admin/course - to prevent duplicate submissions (reload confirmation site)
+//        return "redirect:/admin/course";
+//    }
+//
+//    @GetMapping("/course/deleteEmployee")
+//    public String deleteCourse(@RequestParam("courseId") int theId) {
+//
+//        // delete entity
+//        courseService.deleteById(theId);
+//
+//        // use a redirect to /admin/course - to prevent duplicate submissions (reload confirmation site)
+//        return "redirect:/admin/course";
+//    }
 
 
 

@@ -1,6 +1,6 @@
 //package com.lynhatkhanh.educationweb.educationweb.dao.implement;
 //
-//import com.lynhatkhanh.educationweb.educationweb.dao.MemberDao;
+//import com.lynhatkhanh.educationweb.educationweb.dao.didnotUse.MemberDao;
 //import com.lynhatkhanh.educationweb.educationweb.model.Member;
 //import jakarta.persistence.EntityManager;
 //import jakarta.persistence.TypedQuery;

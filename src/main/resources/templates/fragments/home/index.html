@@ -69,19 +69,23 @@
         <li sec:authorize="!isAuthenticated()">
             <a th:href="@{/showMyLoginPage}" style="color: darkgray">Login</a>
         </li>
+
         <!-- User Account: style can be found in dropdown.less -->
         <li class="nav navbar-nav">
           <div sec:authorize="isAuthenticated()" class="dropdown user user-menu">
             <a th:href="@{#}" class="authentication navmenu dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                style="color: gray">
-              Hello, <span class="hidden-xs" sec:authentication="principal.username"></span>
+              Hello, <span class="hidden-xs" th:text="${#authentication.name}"></span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
-              <li class="user-header">
+              <li class="user-header" style="box-sizing: initial">
                 <img th:src="@{/assets/admin/images/user2-160x160.jpg}" class="img-circle" alt="User Image">
                 <p>
-                  <span sec:authentication="principal.username"></span> - <span sec:authentication="principal.authorities"}></span>
+                  <span sec:authentication="name"></span>
+                  <br>
+                  <span sec:authentication="principal.authorities"></span>
+<!--                  <span th:text="${#authentication.getAuthorities()}"></span>-->
                   <small>Member since Nov. 2012</small>
                 </p>
               </li>
