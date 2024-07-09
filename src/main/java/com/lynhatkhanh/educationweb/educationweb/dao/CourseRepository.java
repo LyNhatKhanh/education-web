@@ -13,7 +13,7 @@ public interface CourseRepository extends CrudRepository<Course, Integer>,
         PagingAndSortingRepository<Course, Integer> {
 
     @Query("SELECT c FROM Course c WHERE c.title LIKE %?1%")
-        // %?1% - RequestParam (1 param)
+        // %?1% - RequestParam (1 param) - %: any-word before and after
     List<Course> searchCourse(String keyword);
 
 }

@@ -51,3 +51,25 @@
 #back-to-home:hover {
 	background-color: #367fa9;
 }
+
+.message {
+	margin-top: 15px;
+	width: 119%;
+}
+
+.disabled {
+	display: none;
+}
+
+.error-message{
+	/*display: none;*/
+	color: red;
+	text-align: left;
+	font-weight: 600;
+	margin-bottom: 5px;
+}
+
+.form-control-error {
+	display: flex;
+	flex-direction: column;
+}

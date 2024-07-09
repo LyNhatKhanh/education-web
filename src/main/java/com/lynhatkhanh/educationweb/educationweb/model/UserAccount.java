@@ -1,8 +1,11 @@
 package com.lynhatkhanh.educationweb.educationweb.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
 
@@ -15,8 +18,9 @@ public class UserAccount {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "user_name")
-    @Size(min = 1, message = "User name is required")
+    @Column(name = "user_name", unique = true)
+//    @NotBlank(message = "Username is required")
+    @Size(min = 1, message = "Username is required")
     private String userName;
 
     @Column(name = "password")
@@ -36,10 +40,10 @@ public class UserAccount {
 
     @Column(name = "gender")
     @Size(min = 1, message = "Gender is required")
-    private Boolean gender;
+    private String gender;
 
     @Column(name = "birthday")
-    @Size(min = 1, message = "Birthday is required")
+//    @Size(min = 1, message = "Birthday is required")
     private Date birthday;
 
     @Column(name = "address")
@@ -55,14 +59,39 @@ public class UserAccount {
     private String telephone;
 
 
-    @OneToMany(mappedBy = "userAccount", fetch = FetchType.EAGER)
+    @OneToMany(
+            mappedBy = "userAccount",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<UserRole> userRole;
+
+    @Column(name = "created_date")
+    private Timestamp createdDate;
+
+    @Column(name = "modified_date")
+    private Timestamp modifiedDate;
 
     // =============== constructor ===============
     public UserAccount() {
     }
 
-    public UserAccount(String userName, String password, Boolean enabled, String firstName, String lastName, Boolean gender, Date birthday, String address, String email, String telephone, Set<UserRole> userRole) {
+    public UserAccount(String userName, String password, Boolean enabled, String firstName, String lastName, String gender, Date birthday, String address, String email, String telephone, Timestamp createdDate, Timestamp modifiedDate) {
+        this.userName = userName;
+        this.password = password;
+        this.enabled = enabled;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.address = address;
+        this.email = email;
+        this.telephone = telephone;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
+    }
+
+    public UserAccount(String userName, String password, Boolean enabled, String firstName, String lastName, String gender, Date birthday, String address, String email, String telephone, Set<UserRole> userRole, Timestamp createdDate, Timestamp modifiedDate) {
         this.userName = userName;
         this.password = password;
         this.enabled = enabled;
@@ -74,19 +103,8 @@ public class UserAccount {
         this.email = email;
         this.telephone = telephone;
         this.userRole = userRole;
-    }
-
-    public UserAccount(String userName, String password, Boolean enabled, String firstName, String lastName, Boolean gender, Date birthday, String address, String email, String telephone) {
-        this.userName = userName;
-        this.password = password;
-        this.enabled = enabled;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.birthday = birthday;
-        this.address = address;
-        this.email = email;
-        this.telephone = telephone;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
     // =============== getter / setter ===============
@@ -139,11 +157,11 @@ public class UserAccount {
         this.lastName = lastName;
     }
 
-    public Boolean getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Boolean gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -187,6 +205,21 @@ public class UserAccount {
         this.userRole = userRole;
     }
 
+    public Timestamp getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Timestamp getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Timestamp modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
 
     // =============== convenient method - bidirectional relationship ===============
 

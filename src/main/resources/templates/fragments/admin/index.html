@@ -243,8 +243,18 @@
                             <li><a th:href="@{#}"><i class="fa fa-circle-o"></i>Lecture</a></li>
                         </ul>
                     </li>
-                    <li><a th:href="@{#}"><i class="fa fa-circle-o"></i>Manage Instructor</a></li>
-                    <li><a th:href="@{#}"><i class="fa fa-circle-o"></i>Manage Student</a></li>
+                    <li class="treeview">
+                        <a th:href="@{#}"><i class="fa fa-circle-o"></i>Manage User
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a th:href="@{/admin/user}"><i class="fa fa-circle-o"></i>All Users</a></li>
+                            <li><a th:href="@{#}"><i class="fa fa-circle-o"></i>Instructor</a></li>
+                            <li><a th:href="@{#}"><i class="fa fa-circle-o"></i>Student</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
 

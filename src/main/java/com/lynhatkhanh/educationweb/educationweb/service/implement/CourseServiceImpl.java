@@ -26,7 +26,6 @@ public class CourseServiceImpl implements CourseService {
 
 
     @Override
-    @Transactional
     public Course save(Course theCourse) {
         return courseRepository.save(theCourse);
     }
@@ -50,7 +49,6 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    @Transactional
     public void deleteById(int theId) {
         courseRepository.deleteById(theId);
     }
