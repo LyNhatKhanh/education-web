@@ -51,6 +51,12 @@
 										You have been logged out!
 									</div>
 								</div>
+								<!-- Alert Create new account success -->
+								<div th:if="${param.message != null}">
+									<div class="alert col-xs-offset-1 col-xs-10" th:classappend="${alert}" >
+										Create account success!
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

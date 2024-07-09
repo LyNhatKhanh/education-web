@@ -26,7 +26,6 @@ public class CourseServiceImpl implements CourseService {
 
 
     @Override
-    @Transactional
     public Course save(Course theCourse) {
         return courseRepository.save(theCourse);
     }
@@ -50,7 +49,6 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    @Transactional
     public void deleteById(int theId) {
         courseRepository.deleteById(theId);
     }
@@ -72,6 +70,9 @@ public class CourseServiceImpl implements CourseService {
         List<Course> listCourse = courseRepository.searchCourse(keyword);
 
         Pageable pageable = PageRequest.of(pageNo-1,2);
+
+        // Offset: start at [x] index to the end (of list)
+        // limit: after list return, take [x] results of this list
 
         Integer start = (int) pageable.getOffset();
         Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > listCourse.size() ? listCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
