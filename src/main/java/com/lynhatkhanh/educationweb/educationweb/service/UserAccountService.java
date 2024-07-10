@@ -15,7 +15,7 @@ public interface UserAccountService {
 
     void save(UserAccount userAccount);
 
-    Page<UserAccount> getAll(Integer pageNo);
+    Page<UserAccount> getUsersOfRole(Integer pageNo, int roleId);
 
-    Page<UserAccount> searchUser(String keyword, Integer pageNo);
+    Page<UserAccount> searchUsersOfRole(String keyword, Integer pageNo, int roleId);
 }

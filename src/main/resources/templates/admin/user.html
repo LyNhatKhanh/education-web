@@ -32,7 +32,7 @@
                 <a flag="info"
                    class="dt-button buttons-colvis btn btn-white btn-primary btn-bold"
                    data-toggle="tooltip"
-                   title='Thêm bài viết' th:href="@{/admin/users/showFormForAdd}">
+                   title='Thêm bài viết' th:href="@{/admin/user/showFormForAdd}">
                     <span>
                         <i class="fa fa-plus-circle bigger-110 purple"></i>
                     </span>
@@ -59,6 +59,7 @@
                         <div class="input-group input-group-sm" style="width: 150px;">
                             <!-- input -->
                             <input type="text" name="keyword" class="form-control pull-right" placeholder="Search">
+                            <input type="hidden" name="roleName" th:value="${roleName}">
 
                             <!-- button submit -->
                             <div class="input-group-btn">
@@ -149,13 +150,15 @@
                                             <!-- Previous -->
                                             <li th:if="${currentPage > 1}" class="paginate_button previous" id="example2_previous"
                                                 th:classappend="${currentPage == 1 ? 'disabled' : ''}">
-                                                <a th:href="@{'?pageNo=' + ${currentPage - 1}}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
+<!--                                                <a th:href="@{'?pageNo=' + ${currentPage - 1} + '&roleName=' + ${roleName}}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>-->
+                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${currentPage - 1} + '&roleName=' + ${roleName}}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
                                             </li>
 
                                             <li class="paginate_button"
                                                 th:each="i : ${#numbers.sequence(1,totalPage)}"
                                                 th:classappend="${currentPage == i ? 'active' : ''}">
-                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo='+${i}}" aria-controls="example2" data-dt-idx="1"
+                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${i} + '&roleName=' + ${roleName}}"
+                                                   aria-controls="example2" data-dt-idx="1"
                                                    tabindex="0"
                                                    th:text="${i}"></a>
                                             </li>
@@ -163,7 +166,8 @@
                                             <!-- Next -->
                                             <li th:if="${currentPage < totalPage}" class="paginate_button" id="example2_next"
                                                 th:classappend="${currentPage == totalPage ? 'disabled' : ''}">
-                                                <a th:href="@{'?pageNo=' + ${currentPage + 1}}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>
+<!--                                                <a th:href="@{'?pageNo=' + ${currentPage + 1} + '&roleName=' + ${roleName}}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>-->
+                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${currentPage + 1} + '&roleName=' + ${roleName}}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>
                                             </li>
 
                                         </ul>

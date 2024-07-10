@@ -54,37 +54,6 @@ public class Course {
         this.title = title;
     }
 
-//    public List<Student> getStudents() {
-//        return students;
-//    }
-//
-//    public void setStudents(List<Student> students) {
-//        this.students = students;
-//    }
-//
-//    public Instructor getTheInstructor() {
-//        return theInstructor;
-//    }
-//
-//    public void setTheInstructor(Instructor theInstructor) {
-//        this.theInstructor = theInstructor;
-//    }
-//
-//    public List<Lecture> getListLecture() {
-//        return listLecture;
-//    }
-//
-//    public void setListLecture(List<Lecture> listLecture) {
-//        this.listLecture = listLecture;
-//    }
-//
-//    // add convenient method for bidirectional relationship
-//    public void addLecture(Lecture lecture) {
-//        if (listLecture == null)
-//            listLecture = new ArrayList<>();
-//        listLecture.add(lecture);
-//        lecture.setCourseId(this);
-//    }
 
     // =========== define toString() ===========
 

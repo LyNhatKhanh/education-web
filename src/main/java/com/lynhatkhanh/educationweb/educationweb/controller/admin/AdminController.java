@@ -125,23 +125,39 @@ public class AdminController {
 
 
     /* ============================== User ============================== */
+
     @GetMapping("/user")
     public String showUsers(Model model, @RequestParam(value = "message", required = false) String message,
-                            @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-                            @Param(value = "keuword") String keyword) {
+                               @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
+                               @Param(value = "keyword") String keyword, @RequestParam(value = "roleName", required = false) String roleName) {
+
         if (message != null)
             MessageUtil.showMessage(message, model);
 
-        Page<UserAccount> listUsers = userAccountService.getAll(pageNo);
+        int roleId = 0;
+        try {
+            if (roleName.equals("student"))
+                roleId = 2;
+            else if (roleName.equals("instructor"))
+                roleId = 3;
+            else if (roleName.equals("all"))
+                roleId = 0;
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+            roleName = "all";
+        }
+
+        Page<UserAccount> studentPages = userAccountService.getUsersOfRole(pageNo, roleId);
 
         if (keyword != null) {
-            listUsers = userAccountService.searchUser(keyword, pageNo);
+            studentPages = userAccountService.searchUsersOfRole(keyword, pageNo, roleId);
             model.addAttribute("keyword", keyword);
         }
 
+        model.addAttribute("roleName", roleName);
         model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPage", listUsers.getTotalPages());
-        model.addAttribute("userAccounts", listUsers);
+        model.addAttribute("totalPage", studentPages.getTotalPages());
+        model.addAttribute("userAccounts", studentPages);
 
         return "admin/user";
     }

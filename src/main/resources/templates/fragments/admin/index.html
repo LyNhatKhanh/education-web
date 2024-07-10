@@ -251,8 +251,8 @@
                         </a>
                         <ul class="treeview-menu">
                             <li><a th:href="@{/admin/user}"><i class="fa fa-circle-o"></i>All Users</a></li>
-                            <li><a th:href="@{#}"><i class="fa fa-circle-o"></i>Instructor</a></li>
-                            <li><a th:href="@{#}"><i class="fa fa-circle-o"></i>Student</a></li>
+                            <li><a th:href="@{/admin/user(roleName=instructor)}"><i class="fa fa-circle-o"></i>Instructor</a></li>
+                            <li><a th:href="@{/admin/user(roleName=student)}"><i class="fa fa-circle-o"></i>Student</a></li>
                         </ul>
                     </li>
                 </ul>
