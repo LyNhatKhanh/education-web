@@ -1,5 +1,6 @@
 package com.lynhatkhanh.educationweb.educationweb.controller.admin;
 
+import com.lynhatkhanh.educationweb.educationweb.exception.DuplicateUsernameException;
 import com.lynhatkhanh.educationweb.educationweb.model.*;
 import com.lynhatkhanh.educationweb.educationweb.service.CourseService;
 import com.lynhatkhanh.educationweb.educationweb.service.RoleService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,12 +31,15 @@ public class AdminController {
     private RoleService roleService;
     private UserRoleService userRoleService;
 
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
-    public AdminController(CourseService courseService, UserAccountService userAccountService, RoleService roleService, UserRoleService userRoleService) {
+    public AdminController(CourseService courseService, UserAccountService userAccountService, RoleService roleService, UserRoleService userRoleService, PasswordEncoder passwordEncoder) {
         this.courseService = courseService;
         this.userAccountService = userAccountService;
         this.roleService = roleService;
         this.userRoleService = userRoleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping({"/index", "/index.html", ""})
@@ -120,7 +125,6 @@ public class AdminController {
     }
 
 
-
     /* ============================== End-Course ============================== */
 
 
@@ -162,11 +166,10 @@ public class AdminController {
         return "admin/user";
     }
 
-    @GetMapping("/user/showFormForUpdate")
-    public String showFormForUpdate(@RequestParam("userId") int userId, Model model) {
+    @GetMapping("/user/showForm")
+    public String showForm(@RequestParam(value = "userId", required = false) Integer userId, Model model) {
 
-        UserAccount userAccount = userAccountService.findById(userId);
-        model.addAttribute("userAccount", userAccount);
+        UserAccount userAccount = new UserAccount();
 
         List<String> genderOption = Arrays.asList("Male", "Female", "Another");
         model.addAttribute("genderOption", genderOption);
@@ -178,17 +181,24 @@ public class AdminController {
         model.addAttribute("roleCheckbox", roles);
 
         // get List<String> of UserRole of userAccount
-        List<Role> userRoleRoles = userAccount.getUserRole().stream().map(userRole -> userRole.getRole()).collect(Collectors.toList());
-        List<String> userRoleNames = userRoleRoles.stream().map(role -> role.getName()).collect(Collectors.toList());
-        model.addAttribute("userRoleNames", userRoleNames);
+        if (userId != null) {
+            userAccount = userAccountService.findById(userId);
+            List<Role> userRoleRoles = userAccount.getUserRole().stream().map(userRole -> userRole.getRole()).collect(Collectors.toList());
+            List<String> userRoleNames = userRoleRoles.stream().map(role -> role.getName()).collect(Collectors.toList());
+            model.addAttribute("userRoleNames", userRoleNames);
+        }
+
+        model.addAttribute("userAccount", userAccount);
+
 
         return "admin/form/user-form";
     }
 
-    @PostMapping("user/update")
+    @PostMapping("user/save")
     public String saveUser(@Valid @ModelAttribute("userAccount") UserAccount userAccount, BindingResult theBindingResult,
                            @RequestParam(value = "selected-role-id", required = false) List<Integer> listRoleIds, Model model) {
 
+        List<Role> allRole = roleService.findAll();
 
         if (theBindingResult.hasErrors()) {
             UserAccount userAccountFromDb = userAccountService.findById(userAccount.getId());
@@ -212,7 +222,7 @@ public class AdminController {
 
             System.out.println("Binding results: " + theBindingResult.toString());
             return "admin/form/user-form";
-        } else {
+        } else if (userAccount.getId() != 0){
             UserAccount inDatabase = userAccountService.findById(userAccount.getId());
 
             inDatabase.setFirstName(userAccount.getFirstName());
@@ -223,7 +233,6 @@ public class AdminController {
             inDatabase.setGender(userAccount.getGender());
             inDatabase.setEnabled(userAccount.getEnabled());
 
-            List<Role> allRole = roleService.findAll();
             if (listRoleIds == null)
                 inDatabase.getUserRole().clear();
             else {
@@ -246,9 +255,45 @@ public class AdminController {
             userAccountService.save(inDatabase);
             System.out.println("saving...");
             return "redirect:/admin/user?message=update_success";
+        } else {
+            userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
+            userAccount.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+
+            try {
+                userAccountService.save(userAccount);
+                userAccount.setUserRole(new HashSet<>());
+                for (Integer roleId : listRoleIds) {
+                    Role newRole = allRole.stream()
+                            .filter(role -> role.getId() == roleId)
+                            .findFirst()
+                            .orElseThrow(() -> new IllegalArgumentException("Invalid role id: " + roleId));
+                    userAccount.getUserRole().add(new UserRole(newRole, userAccount));
+                }
+                userAccountService.save(userAccount);
+                return "redirect:/admin/user?message=insert_success";
+            } catch (DuplicateUsernameException e) {
+                model.addAttribute("errorMessage", e.getMessage());
+
+                List<String> genderOption = Arrays.asList("Male", "Female", "Another");
+                model.addAttribute("genderOption", genderOption);
+
+                List<Boolean> enableOption = Arrays.asList(true, false);
+                model.addAttribute("enableOption", enableOption);
+
+                List<Role> roles = roleService.findAll();
+                model.addAttribute("roleCheckbox", roles);
+
+                return "admin/form/user-form";
+            }
         }
     }
 
+
+    @GetMapping ("user/delete")
+    public String deleteUser(@RequestParam("userId") int userId) {
+        userAccountService.deleteById(userId);
+        return "redirect:/admin/user?message=delete_success";
+    }
 
     /* ============================== End-User ============================== */
 

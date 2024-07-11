@@ -18,4 +18,6 @@ public interface UserAccountService {
     Page<UserAccount> getUsersOfRole(Integer pageNo, int roleId);
 
     Page<UserAccount> searchUsersOfRole(String keyword, Integer pageNo, int roleId);
+
+    void deleteById(int theId);
 }

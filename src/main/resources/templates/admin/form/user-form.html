@@ -28,7 +28,8 @@
             <!-- box header -->
             <div class="box-header with-border">
                 <!-- left side-->
-                <h3>Save User</h3>
+                <h3 th:if="${userAccount.id!=0}">Update User</h3>
+                <h3 th:if="${userAccount.id==0}">Create a new user</h3>
                 <!-- right side-->
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
@@ -44,7 +45,7 @@
             <div class="box-body" style="min-height: 620px; font-size: 16px">
                 <div class="box">
                     <!-- form for POST method-->
-                    <form th:action="@{/admin/user/update}" th:object="${userAccount}" method="post">
+                    <form th:action="@{/admin/user/save}" th:object="${userAccount}" method="post">
                         <input type="hidden" th:field="*{id}">
                         <div class="form-group" style="margin-top: 40px; height: 30px">
                             <label class="col-sm-2 control-label no-padding-right">First Name</label>
@@ -69,16 +70,27 @@
                         <div class="form-group" style="margin-top: 40px; height: 30px">
                             <label class="col-sm-2 control-label no-padding-right">Username</label>
                             <div class="form-control-error">
-                                <input type="text" class="col-sm-12" th:field="*{userName}" placeholder="Enter Username" disabled>
+                                <input type="text" class="col-sm-12" th:field="*{userName}" placeholder="Enter Username"
+                                       th:attr="disabled=${userAccount.id != 0} ? 'disabled' : null">
                                 <!-- add error message (if presence) -->
                                 <p th:if="${#fields.hasErrors('userName')}"
                                    th:errors="*{userName}" class="error-message"></p>
+                                <span th:if="${errorMessage}" th:text="${errorMessage}" class="error-message"></span>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 40px; height: 30px" th:if="${userAccount.id==0}">
+                            <label class="col-sm-2 control-label no-padding-right">Password</label>
+                            <div class="form-control-error">
+                                <input type="password" class="col-sm-12" th:field="*{password}" placeholder="Enter Password">
+                                <!-- add error message (if presence) -->
+                                <p th:if="${#fields.hasErrors('password')}"
+                                   th:errors="*{password}" class="error-message"></p>
                             </div>
                         </div>
                         <div class="form-group" style="margin-top: 40px; height: 30px">
                             <label class="col-sm-2 control-label no-padding-right">Email</label>
                             <div class="form-control-error">
-                                <input type="text" class="col-sm-12" th:field="*{email}" placeholder="Enter Email">
+                                <input type="email" class="col-sm-12" th:field="*{email}" placeholder="Enter Email">
                                 <!-- add error message (if presence) -->
                                 <p th:if="${#fields.hasErrors('email')}"
                                    th:errors="*{email}" class="error-message"></p>
@@ -148,7 +160,7 @@
                                         <input class="custom-control-input" type="checkbox" th:id="roleCheckbox + ${roleCheckB.name}"
                                                th:name="selected-role-id" th:value="${roleCheckB.id}">
                                         <label th:for="roleCheckbox + ${roleCheckB.name}" class="custom-control-label"
-                                               th:text="${roleCheckB}"></label>
+                                               th:text="${roleCheckB.name}"></label>
                                     </span>
                                 </span>
                             </span>
