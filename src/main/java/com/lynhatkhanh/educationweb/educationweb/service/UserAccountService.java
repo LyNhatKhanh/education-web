@@ -17,7 +17,14 @@ public interface UserAccountService {
 
     Page<UserAccount> getUsersOfRole(Integer pageNo, int roleId);
 
+    List<UserAccount> getUsersOfRole(int roleId);
+
     Page<UserAccount> searchUsersOfRole(String keyword, Integer pageNo, int roleId);
 
     void deleteById(int theId);
+
+    Page<UserAccount> getStudentOfCourse(Integer pageNo, int courseId);
+
+
+
 }

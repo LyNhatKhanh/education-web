@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -72,6 +74,16 @@ public class UserAccount {
     @Column(name = "modified_date")
     private Timestamp modifiedDate;
 
+    @OneToMany(
+            mappedBy = "userAccount",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<CourseUser> enrolledCourses;
+
+    @OneToMany(mappedBy = "instructor")
+    private Set<Course> taughtCourses = new HashSet<>();
+
     // =============== constructor ===============
     public UserAccount() {
     }
@@ -91,7 +103,7 @@ public class UserAccount {
         this.modifiedDate = modifiedDate;
     }
 
-    public UserAccount(String userName, String password, Boolean enabled, String firstName, String lastName, String gender, Date birthday, String address, String email, String telephone, Set<UserRole> userRole, Timestamp createdDate, Timestamp modifiedDate) {
+    public UserAccount(String userName, String password, Boolean enabled, String firstName, String lastName, String gender, Date birthday, String address, String email, String telephone, Set<UserRole> userRole, Timestamp createdDate, Timestamp modifiedDate, Set<CourseUser> enrolledCourses, Set<Course> taughtCourses) {
         this.userName = userName;
         this.password = password;
         this.enabled = enabled;
@@ -105,6 +117,8 @@ public class UserAccount {
         this.userRole = userRole;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
+        this.enrolledCourses = enrolledCourses;
+        this.taughtCourses = taughtCourses;
     }
 
     // =============== getter / setter ===============
@@ -219,6 +233,22 @@ public class UserAccount {
 
     public void setModifiedDate(Timestamp modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+
+    public Set<CourseUser> getEnrolledCourses() {
+        return enrolledCourses;
+    }
+
+    public void setEnrolledCourses(Set<CourseUser> enrolledCourses) {
+        this.enrolledCourses = enrolledCourses;
+    }
+
+    public Set<Course> getTaughtCourses() {
+        return taughtCourses;
+    }
+
+    public void setTaughtCourses(Set<Course> taughtCourses) {
+        this.taughtCourses = taughtCourses;
     }
 
     // =============== convenient method - bidirectional relationship ===============

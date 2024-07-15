@@ -20,4 +20,6 @@ public interface CourseService {
     List<Course> searchCourse(String keyword);
 
     Page<Course> searchCourse(String keyword, Integer pageNo);
+
+    void addUserToCourse(int userId, int courseId);
 }

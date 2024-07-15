@@ -57,19 +57,23 @@ public class AdminController {
 
     /* ============================== Course ============================== */
     @GetMapping("/course")
-    public String showCourses(Model theModel,
-                              @Param("keyword") String keyword,
+    public String showCourses(Model model,
+                              @Param("keyword") String keyword, @RequestParam(value = "message", required = false) String message,
                               @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo) {
+        if (message != null) {
+            MessageUtil.showMessage(message, model);
+        }
+
         Page<Course> listCourse = courseService.getAll(pageNo);
 
         if (keyword != null) {
             listCourse = courseService.searchCourse(keyword, pageNo);
-            theModel.addAttribute("keyword", keyword);
+            model.addAttribute("keyword", keyword);
         }
 
-        theModel.addAttribute("totalPage", listCourse.getTotalPages());
-        theModel.addAttribute("currentPage", pageNo);
-        theModel.addAttribute("courses", listCourse);
+        model.addAttribute("totalPage", listCourse.getTotalPages());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("courses", listCourse);
 
         return "admin/course";
     }
@@ -78,40 +82,54 @@ public class AdminController {
      * TODO: merge 2 getMapping to 1 getMapping("showForm") within the same URL
      * */
     @GetMapping("/course/showFormForAdd")
-    public String showFormAddCourse(Model theModel) {
+    public String showFormAddCourse(Model model) {
 
         Course theCourse = new Course();
-//        List<Instructor> listInstructor = instructorService.findAll();
+        List<UserAccount> instructorList = userAccountService.getUsersOfRole(3);
 
-        theModel.addAttribute("course", theCourse);
-//        theModel.addAttribute("instructors", listInstructor);
+        model.addAttribute("course", theCourse);
+        model.addAttribute("instructors", instructorList);
 
         return "admin/form/course-form";
     }
 
     @GetMapping("/course/showFormForUpdate")
-    public String showFormUpdateCourse(@RequestParam("courseId") int theId, Model theModel) {
-
-//        List<Instructor> listInstructor = instructorService.findAll();
+    public String showFormUpdateCourse(@RequestParam("courseId") int theId, Model model) {
 
         // find entity
         Course theCourse = courseService.findById(theId);
+        List<UserAccount> instructorList = userAccountService.getUsersOfRole(3);
 
         // send entity to template
-        theModel.addAttribute("course", theCourse);
-//        theModel.addAttribute("instructors", listInstructor);
+        model.addAttribute("course", theCourse);
+        model.addAttribute("instructors", instructorList);
 
         return "admin/form/course-form";
     }
 
     @PostMapping("/course/save")
-    public String saveCourse(@ModelAttribute("course") Course theCourse) {
+    public String saveCourse(@Valid @ModelAttribute("course") Course theCourse, BindingResult theBindingResult,
+                             @RequestParam("instructorId-option") Integer instructorId, Model model) {
+        String typeOfMessage = "";
+        if (theCourse.getId() != 0)
+            typeOfMessage = "update_success";
+        else
+            typeOfMessage = "insert_success";
+
+        if (theBindingResult.hasErrors()) {
+            List<UserAccount> instructorList = userAccountService.getUsersOfRole(3);
+            model.addAttribute("course", theCourse);
+            model.addAttribute("instructors", instructorList);
+            return "admin/form/course-form";
+        }
+        else
+            theCourse.setInstructor(userAccountService.findById(instructorId));
 
         // save entity
         courseService.save(theCourse);
 
         // use a redirect to /admin/course - to prevent duplicate submissions (reload confirmation site)
-        return "redirect:/admin/course";
+        return "redirect:/admin/course?message=" + typeOfMessage;
     }
 
     @GetMapping("/course/deleteCourse")
@@ -124,16 +142,65 @@ public class AdminController {
         return "redirect:/admin/course";
     }
 
+    @GetMapping("/course/showStudentOfCourse")
+    public String showStudentOfCourse(Model model, @RequestParam(value = "message", required = false) String message,
+                                      @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
+                                      @RequestParam(value = "courseId") int courseId,
+                                      @Param(value = "keyword") String keyword) {
+        if (message != null)
+            MessageUtil.showMessage(message, model);
+
+        Page<UserAccount> studentOfCoursePages = userAccountService.getStudentOfCourse(pageNo, courseId);
+
+        model.addAttribute("courseId", courseId);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPage", studentOfCoursePages.getTotalPages());
+        model.addAttribute("userAccounts", studentOfCoursePages);
+
+        return "admin/list/user-list";
+    }
+
+
+    @GetMapping("/course/deleteOutOfCourse")
+    public String deleteStudentOutOfCourse(@RequestParam("userId") int studentId, @RequestParam(value = "courseId") int courseId) {
+
+        UserAccount theStudent = userAccountService.findById(studentId);
+        theStudent.getEnrolledCourses().removeIf(instance -> instance.getCourse().getId()==courseId);
+        theStudent.setModifiedDate(new Timestamp(System.currentTimeMillis()));
+        userAccountService.save(theStudent);
+
+        return "redirect:/admin/course/showStudentOfCourse?courseId=" + courseId + "&message=delete_success";
+    }
+
+    @GetMapping("/course/showStudentDetail")
+    public String showStudentDetail(@RequestParam("userId") int studentId, @RequestParam("courseId") int courseId, Model model) {
+
+        UserAccount studentDetail = userAccountService.findById(studentId);
+
+        model.addAttribute("userAccount", studentDetail);
+        model.addAttribute("courseId", courseId);
+
+        return "admin/detail/user-detail";
+    }
 
     /* ============================== End-Course ============================== */
+    /****************************************************************************/
+    /* ============================== Lecture ============================== */
 
+    @GetMapping("/lecture")
+    public String showLecture() {
 
+        return "admin/lecture";
+    }
+
+    /* ============================== End-Lecture ============================== */
+    /****************************************************************************/
     /* ============================== User ============================== */
 
     @GetMapping("/user")
     public String showUsers(Model model, @RequestParam(value = "message", required = false) String message,
-                               @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-                               @Param(value = "keyword") String keyword, @RequestParam(value = "roleName", required = false) String roleName) {
+                            @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
+                            @Param(value = "keyword") String keyword, @RequestParam(value = "roleName", required = false) String roleName) {
 
         if (message != null)
             MessageUtil.showMessage(message, model);
@@ -194,7 +261,7 @@ public class AdminController {
         return "admin/form/user-form";
     }
 
-    @PostMapping("user/save")
+    @PostMapping("/user/save")
     public String saveUser(@Valid @ModelAttribute("userAccount") UserAccount userAccount, BindingResult theBindingResult,
                            @RequestParam(value = "selected-role-id", required = false) List<Integer> listRoleIds, Model model) {
 
@@ -222,7 +289,7 @@ public class AdminController {
 
             System.out.println("Binding results: " + theBindingResult.toString());
             return "admin/form/user-form";
-        } else if (userAccount.getId() != 0){
+        } else if (userAccount.getId() != 0) {
             UserAccount inDatabase = userAccountService.findById(userAccount.getId());
 
             inDatabase.setFirstName(userAccount.getFirstName());
@@ -262,12 +329,14 @@ public class AdminController {
             try {
                 userAccountService.save(userAccount);
                 userAccount.setUserRole(new HashSet<>());
-                for (Integer roleId : listRoleIds) {
-                    Role newRole = allRole.stream()
-                            .filter(role -> role.getId() == roleId)
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("Invalid role id: " + roleId));
-                    userAccount.getUserRole().add(new UserRole(newRole, userAccount));
+                if (listRoleIds != null) {
+                    for (Integer roleId : listRoleIds) {
+                        Role newRole = allRole.stream()
+                                .filter(role -> role.getId() == roleId)
+                                .findFirst()
+                                .orElseThrow(() -> new IllegalArgumentException("Invalid role id: " + roleId));
+                        userAccount.getUserRole().add(new UserRole(newRole, userAccount));
+                    }
                 }
                 userAccountService.save(userAccount);
                 return "redirect:/admin/user?message=insert_success";
@@ -288,8 +357,7 @@ public class AdminController {
         }
     }
 
-
-    @GetMapping ("user/delete")
+    @GetMapping("/user/delete")
     public String deleteUser(@RequestParam("userId") int userId) {
         userAccountService.deleteById(userId);
         return "redirect:/admin/user?message=delete_success";

@@ -1,5 +1,6 @@
 package com.lynhatkhanh.educationweb.educationweb.service.implement;
 
+import com.lynhatkhanh.educationweb.educationweb.constant.SystemConstant;
 import com.lynhatkhanh.educationweb.educationweb.dao.UserAccountRepository;
 import com.lynhatkhanh.educationweb.educationweb.exception.DuplicateUsernameException;
 import com.lynhatkhanh.educationweb.educationweb.model.UserAccount;
@@ -59,11 +60,11 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public Page<UserAccount> getUsersOfRole(Integer pageNo, int roleId) {
-        Pageable pageable = PageRequest.of(pageNo-1, 5);
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
         if (roleId == 0) {
             return userAccountRepository.findAll(pageable);
         } else {
-            List<UserAccount> studentList = userAccountRepository.findRoleAccount(roleId);
+            List<UserAccount> studentList = userAccountRepository.findUserAccountOfRole(roleId);
 
             Integer start = (int) pageable.getOffset();
             Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > studentList.size() ? studentList.size() : (pageable.getOffset() + pageable.getPageSize()));
@@ -75,14 +76,19 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    public List<UserAccount> getUsersOfRole(int roleId) {
+        return userAccountRepository.findUserAccountOfRole(roleId);
+    }
+
+    @Override
     public Page<UserAccount> searchUsersOfRole(String keyword, Integer pageNo, int roleId) {
         List<UserAccount> userList;
         if (roleId == 0)
             userList = userAccountRepository.searchUserAccount(keyword);
         else
-            userList = userAccountRepository.searchRoleAccount(keyword, roleId);
+            userList = userAccountRepository.searchUserAccountOfRole(keyword, roleId);
 
-        Pageable pageable = PageRequest.of(pageNo-1, 5);
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
 
         // offset: start at [x] index of Page list (item instance) - like PageNo [offset = pageNo * pageSize]
         // limit: after return list, take [x] results of list - like PageSize
@@ -99,4 +105,20 @@ public class UserAccountServiceImpl implements UserAccountService {
     public void deleteById(int theId) {
         userAccountRepository.deleteById(theId);
     }
+
+    @Override
+    public Page<UserAccount> getStudentOfCourse(Integer pageNo, int courseId) {
+        List<UserAccount> studentOfCourse = userAccountRepository.findUserAccountOfCourse(courseId);
+
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+
+        Integer start = (int) pageable.getOffset();
+        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > studentOfCourse.size() ? studentOfCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
+
+        List<UserAccount> showList = studentOfCourse.subList(start, end);
+
+        return new PageImpl<>(showList, pageable, studentOfCourse.size());
+    }
+
+
 }

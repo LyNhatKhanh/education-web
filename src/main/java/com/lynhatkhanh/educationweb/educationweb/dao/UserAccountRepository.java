@@ -1,7 +1,6 @@
 package com.lynhatkhanh.educationweb.educationweb.dao;
 
 import com.lynhatkhanh.educationweb.educationweb.model.UserAccount;
-import org.h2.engine.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -23,11 +22,16 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Integ
     @Query("SELECT u FROM UserAccount AS u " +
             "INNER JOIN UserRole AS ur ON u.id = ur.userAccount.id " +
             "WHERE ur.role.id = :roleId")
-    List<UserAccount> findRoleAccount(@Param("roleId")int roleId);
+    List<UserAccount> findUserAccountOfRole(@Param("roleId")int roleId);
 
     @Query("SELECT u FROM UserAccount AS u " +
             "INNER JOIN UserRole AS ur ON u.id = ur.userAccount.id " +
             "WHERE ur.role.id = :roleId AND u.userName LIKE %:keyword%")
-    List<UserAccount> searchRoleAccount(@Param("keyword") String keyword, @Param("roleId") int roleId);
+    List<UserAccount> searchUserAccountOfRole(@Param("keyword") String keyword, @Param("roleId") int roleId);
+
+    @Query("SELECT u FROM UserAccount AS u " +
+            "INNER JOIN CourseUser AS cs ON u.id = cs.userAccount.id " +
+            "WHERE cs.course.id = :courseId")
+    List<UserAccount> findUserAccountOfCourse(@Param("courseId") int courseId);
 
 }
