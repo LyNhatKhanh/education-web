@@ -38,9 +38,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity.userDetailsService(customUserDetailService)
+                .csrf().disable()
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/*").permitAll()
+                                .requestMatchers("/api/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/admin/**").hasAnyRole("INSTRUCTOR", "ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()

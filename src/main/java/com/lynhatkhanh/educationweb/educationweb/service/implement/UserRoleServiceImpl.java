@@ -38,6 +38,11 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
+    public UserRole findUserRoleAndRoleByUserRoleId(int theId) {
+        return userRoleRepository.findUserRoleAndRoleWithUserRoleId(theId);
+    }
+
+    @Override
     public void save(UserRole userRole) {
         userRoleRepository.save(userRole);
     }

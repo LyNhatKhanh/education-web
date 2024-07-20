@@ -10,6 +10,8 @@ public interface UserRoleService {
 
     UserRole findById(int id);
 
+    UserRole findUserRoleAndRoleByUserRoleId(int theId);
+
     void save(UserRole userRole);
 
 }

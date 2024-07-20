@@ -4,6 +4,7 @@ import com.lynhatkhanh.educationweb.educationweb.model.UserAccount;
 import com.lynhatkhanh.educationweb.educationweb.model.UserRole;
 import com.lynhatkhanh.educationweb.educationweb.model.CustomUserDetail;
 import com.lynhatkhanh.educationweb.educationweb.service.UserAccountService;
+import com.lynhatkhanh.educationweb.educationweb.service.UserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,15 +21,17 @@ import java.util.Set;
 public class CustomUserDetailService implements UserDetailsService {
 
     private UserAccountService userAccountService;
+    private UserRoleService userRoleService;
 
     @Autowired
-    public CustomUserDetailService(UserAccountService userAccountService) {
+    public CustomUserDetailService(UserAccountService userAccountService, UserRoleService userRoleService) {
         this.userAccountService = userAccountService;
+        this.userRoleService = userRoleService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserAccount user = userAccountService.findByUserName(username);
+        UserAccount user = userAccountService.findUserAndUserRoleByUserId(username);
         System.out.println(username);
 //        System.out.println(user);
         if (user == null)
@@ -38,7 +41,8 @@ public class CustomUserDetailService implements UserDetailsService {
         Set<UserRole> roles = user.getUserRole();
 
         for (UserRole userRole : roles)
-            grantedAuthorities.add(new SimpleGrantedAuthority(userRole.getRole().getName()));
+//            grantedAuthorities.add(new SimpleGrantedAuthority(userRole.getRole().getName()));
+            grantedAuthorities.add(new SimpleGrantedAuthority(userRoleService.findUserRoleAndRoleByUserRoleId(userRole.getId()).getRole().getName()));
         return new CustomUserDetail(user, grantedAuthorities);
 
     }

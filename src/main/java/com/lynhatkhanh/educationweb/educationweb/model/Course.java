@@ -5,20 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "course")
-public class Course {
+public class Course extends BaseEntity {
 
     // =========== define fields ===========
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    @NotNull(message = "is required")
-    private int id;
 
     @Column(name = "title")
     @NotBlank(message = "Title is required")
@@ -46,26 +41,23 @@ public class Course {
     public Course() {
     }
 
-    public Course(String title) {
-        this.title = title;
-    }
-
-    public Course(String title, List<Lecture> listLecture, Set<CourseUser> courseStudents, UserAccount instructors) {
+    public Course(String title, List<Lecture> listLecture, Set<CourseUser> courseStudents, UserAccount instructor) {
         this.title = title;
         this.listLecture = listLecture;
         this.courseStudents = courseStudents;
-        this.instructor = instructors;
+        this.instructor = instructor;
+    }
+
+    public Course(Date createdDate, Date modifiedDate, String createdBy, String modifiedBy, String title, List<Lecture> listLecture, Set<CourseUser> courseStudents, UserAccount instructor) {
+        super(createdDate, modifiedDate, createdBy, modifiedBy);
+        this.title = title;
+        this.listLecture = listLecture;
+        this.courseStudents = courseStudents;
+        this.instructor = instructor;
     }
 
     // =========== define getters/setters ===========
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -105,11 +97,10 @@ public class Course {
     @Override
     public String toString() {
         return "Course{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", listLecture=" + listLecture +
                 ", courseStudents=" + courseStudents +
-                ", instructors=" + instructor +
+                ", instructor=" + instructor +
                 '}';
     }
 }

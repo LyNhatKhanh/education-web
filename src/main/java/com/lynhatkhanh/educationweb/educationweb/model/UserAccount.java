@@ -1,5 +1,6 @@
 package com.lynhatkhanh.educationweb.educationweb.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -13,12 +14,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user")
-public class UserAccount {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+public class UserAccount extends BaseEntity {
 
     @Column(name = "user_name", unique = true)
 //    @NotBlank(message = "Username is required")
@@ -61,34 +57,31 @@ public class UserAccount {
     private String telephone;
 
 
+    @JsonIgnore
     @OneToMany(
             mappedBy = "userAccount",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Set<UserRole> userRole;
 
-    @Column(name = "created_date")
-    private Timestamp createdDate;
-
-    @Column(name = "modified_date")
-    private Timestamp modifiedDate;
-
+    @JsonIgnore
     @OneToMany(
             mappedBy = "userAccount",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Set<CourseUser> enrolledCourses;
 
-    @OneToMany(mappedBy = "instructor")
+    @JsonIgnore
+    @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY)
     private Set<Course> taughtCourses = new HashSet<>();
 
     // =============== constructor ===============
     public UserAccount() {
     }
 
-    public UserAccount(String userName, String password, Boolean enabled, String firstName, String lastName, String gender, Date birthday, String address, String email, String telephone, Timestamp createdDate, Timestamp modifiedDate) {
+    public UserAccount(String userName, String password, Boolean enabled, String firstName, String lastName, String gender, Date birthday, String address, String email, String telephone) {
         this.userName = userName;
         this.password = password;
         this.enabled = enabled;
@@ -99,11 +92,10 @@ public class UserAccount {
         this.address = address;
         this.email = email;
         this.telephone = telephone;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
     }
 
-    public UserAccount(String userName, String password, Boolean enabled, String firstName, String lastName, String gender, Date birthday, String address, String email, String telephone, Set<UserRole> userRole, Timestamp createdDate, Timestamp modifiedDate, Set<CourseUser> enrolledCourses, Set<Course> taughtCourses) {
+    public UserAccount(Date createdDate, Date modifiedDate, String createdBy, String modifiedBy, String userName, String password, Boolean enabled, String firstName, String lastName, String gender, Date birthday, String address, String email, String telephone, Set<UserRole> userRole, Set<CourseUser> enrolledCourses, Set<Course> taughtCourses) {
+        super(createdDate, modifiedDate, createdBy, modifiedBy);
         this.userName = userName;
         this.password = password;
         this.enabled = enabled;
@@ -115,21 +107,11 @@ public class UserAccount {
         this.email = email;
         this.telephone = telephone;
         this.userRole = userRole;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
         this.enrolledCourses = enrolledCourses;
         this.taughtCourses = taughtCourses;
     }
 
     // =============== getter / setter ===============
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getUserName() {
         return userName;
@@ -217,22 +199,6 @@ public class UserAccount {
 
     public void setUserRole(Set<UserRole> userRole) {
         this.userRole = userRole;
-    }
-
-    public Timestamp getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Timestamp createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Timestamp getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(Timestamp modifiedDate) {
-        this.modifiedDate = modifiedDate;
     }
 
     public Set<CourseUser> getEnrolledCourses() {

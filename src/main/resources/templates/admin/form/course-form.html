@@ -61,7 +61,7 @@
                                 <label class="col-sm-2 control-label no-padding-right">Instructor</label>
                                 <div class="form-control-error">
                                     <select class="col-sm-12" th:name="instructorId-option" style="font-size: 16px; height: 22px"
-                                            required id="instructor-select" >
+                                            required id="instructor-selector" >
                                     <span th:if="*{instructor == null}">
                                         <option value="">Choose instructor</option>
                                         <option th:each="instructor : ${instructors}" th:value="${instructor.id}"
@@ -73,14 +73,12 @@
                                                 th:text="${instructor.firstName + ' ' + instructor.lastName}" th:selected="${instructor == course.instructor}"></option>
                                     </span>
                                     </select>
-                                    <!-- add error message (if presence) -->
-                                    <p th:if="${#fields.hasErrors('instructor')}"
-                                       th:errors="*{instructor}" class="error-message"></p>
                                 </div>
                             </div>
                             <br>
                             <hr>
-                            <input type="submit" value="Save" class="btn btn-info col-2" style="margin-left: 15px;">
+                            <input th:if="*{id==0}" type="submit" value="Save" class="btn btn-info col-2" style="margin-left: 15px;">
+                            <input th:if="*{id!=0}" type="submit" value="Update" class="btn btn-info col-2" style="margin-left: 15px;">
                             <br>
                             <br>
                         </form>

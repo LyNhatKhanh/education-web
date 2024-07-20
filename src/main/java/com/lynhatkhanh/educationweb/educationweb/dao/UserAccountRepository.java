@@ -15,6 +15,11 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Integ
 
     UserAccount findUserAccountByUserName(String userName);
 
+    @Query("SELECT u FROM UserAccount u " +
+            "JOIN FETCH u.userRole " +
+            "WHERE u.userName=:userName")
+    UserAccount findUserAccountAndRoleByUserName(@Param("userName") String userName);
+
     @Query("SELECT u FROM UserAccount u WHERE u.userName LIKE %?1%")
         // %?1% - RequestParam (1 param) - %: any-word before and after
     List<UserAccount> searchUserAccount(String keyword);
@@ -22,7 +27,7 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Integ
     @Query("SELECT u FROM UserAccount AS u " +
             "INNER JOIN UserRole AS ur ON u.id = ur.userAccount.id " +
             "WHERE ur.role.id = :roleId")
-    List<UserAccount> findUserAccountOfRole(@Param("roleId")int roleId);
+    List<UserAccount> findUserAccountOfRole(@Param("roleId") int roleId);
 
     @Query("SELECT u FROM UserAccount AS u " +
             "INNER JOIN UserRole AS ur ON u.id = ur.userAccount.id " +

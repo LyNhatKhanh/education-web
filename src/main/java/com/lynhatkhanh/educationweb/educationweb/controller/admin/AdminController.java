@@ -2,10 +2,7 @@ package com.lynhatkhanh.educationweb.educationweb.controller.admin;
 
 import com.lynhatkhanh.educationweb.educationweb.exception.DuplicateUsernameException;
 import com.lynhatkhanh.educationweb.educationweb.model.*;
-import com.lynhatkhanh.educationweb.educationweb.service.CourseService;
-import com.lynhatkhanh.educationweb.educationweb.service.RoleService;
-import com.lynhatkhanh.educationweb.educationweb.service.UserAccountService;
-import com.lynhatkhanh.educationweb.educationweb.service.UserRoleService;
+import com.lynhatkhanh.educationweb.educationweb.service.*;
 import com.lynhatkhanh.educationweb.educationweb.utils.MessageUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +28,18 @@ public class AdminController {
     private RoleService roleService;
     private UserRoleService userRoleService;
 
+    private LectureService lectureService;
+
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AdminController(CourseService courseService, UserAccountService userAccountService, RoleService roleService, UserRoleService userRoleService, PasswordEncoder passwordEncoder) {
+    public AdminController(CourseService courseService, UserAccountService userAccountService, RoleService roleService, UserRoleService userRoleService, PasswordEncoder passwordEncoder, LectureService lectureService) {
         this.courseService = courseService;
         this.userAccountService = userAccountService;
         this.roleService = roleService;
         this.userRoleService = userRoleService;
         this.passwordEncoder = passwordEncoder;
+        this.lectureService = lectureService;
     }
 
     @GetMapping({"/index", "/index.html", ""})
@@ -122,8 +122,14 @@ public class AdminController {
             model.addAttribute("instructors", instructorList);
             return "admin/form/course-form";
         }
-        else
+        else {
+            if (theCourse.getId() != 0)
+                typeOfMessage = "update_success";
+            else
+                typeOfMessage = "insert_success";
             theCourse.setInstructor(userAccountService.findById(instructorId));
+
+        }
 
         // save entity
         courseService.save(theCourse);
@@ -188,10 +194,50 @@ public class AdminController {
     /* ============================== Lecture ============================== */
 
     @GetMapping("/lecture")
-    public String showLecture() {
+    public String showLecture(Model model, @RequestParam(value = "message", required = false) String message,
+                              @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo) {
+        List<Lecture> lectures = lectureService.findAll();
+
+        model.addAttribute("lectures", lectures);
 
         return "admin/lecture";
     }
+
+    @GetMapping("/lecture/showFormUpdate")
+    public String showFormUpdateLecture(Model model, @RequestParam("lectureId") int lectureId) {
+
+        Lecture lecture = lectureService.findById(lectureId);
+        List<Course> courses = courseService.findAll();
+
+        model.addAttribute("lecture", lecture);
+        model.addAttribute("courses", courses);
+
+        return "admin/form/lecture-form";
+    }
+
+    @GetMapping("/lecture/save")
+    public String saveLecture(@Valid @ModelAttribute("lecture") Lecture lecture, BindingResult bindingResult, Model model,
+                              @RequestParam("courseId-option") int courseId) {
+
+        String typeOfMessage = null;
+        if (lecture.getId() != 0)
+            typeOfMessage = "update_success";
+        else
+            typeOfMessage = "insert_success";
+
+        if (bindingResult.hasErrors()) {
+            List<Course> courses = courseService.findAll();
+
+            model.addAttribute("lecture", lecture);
+            model.addAttribute("courses", courses);
+            return "admin/form/lecture-form";
+        } else {
+            lecture.setCourseId(courseService.findById(courseId));
+            lectureService.save(lecture);
+            return "redirect:/admin/lecture?message=" + typeOfMessage;
+        }
+    }
+
 
     /* ============================== End-Lecture ============================== */
     /****************************************************************************/

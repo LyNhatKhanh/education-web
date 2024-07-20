@@ -32,6 +32,11 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    public UserAccount findUserAndUserRoleByUserId(String userName) {
+        return userAccountRepository.findUserAccountAndRoleByUserName(userName);
+    }
+
+    @Override
     public List<UserAccount> findAll() {
         return (List<UserAccount>) userAccountRepository.findAll();
     }

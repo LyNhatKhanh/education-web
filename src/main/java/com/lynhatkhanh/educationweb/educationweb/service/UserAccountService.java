@@ -9,6 +9,8 @@ public interface UserAccountService {
 
     UserAccount findByUserName(String userName);
 
+    UserAccount findUserAndUserRoleByUserId(String userName);
+
     List<UserAccount> findAll();
 
     UserAccount findById(int userId);

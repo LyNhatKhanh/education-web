@@ -24,23 +24,14 @@ public class CustomUserDetail implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-//        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
-//        return Arrays.asList(authority);
-
-//        Iterator<? extends GrantedAuthority> authorityList = authorities.iterator();
-//        ArrayList<String> allAuthorities = new ArrayList<>();
-//        while(authorityList.hasNext()) {
-//            allAuthorities.add(authorityList.next().toString());
-//        }
-
-        List<SimpleGrantedAuthority> arr = new ArrayList<>();
+        /*List<SimpleGrantedAuthority> arr = new ArrayList<>();
 
         Set<UserRole> roles = this.userAccount.getUserRole();
         for (UserRole userRole: roles) {
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRole.getRole().getName());
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRoleService.findUserRoleAndRoleByUserRoleId(userRole.getId()).getRole().getName());
             arr.add(authority);
-        }
-        return arr;
+        }*/
+        return this.authorities;
     }
 
     @Override
