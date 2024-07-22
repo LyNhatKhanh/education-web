@@ -214,6 +214,23 @@
             event.target.setCustomValidity('');
         };
 
+        let userAPI = '[[@{/api/users}]]';
+        function addUser(data) {
+            $.ajax({
+                url: userAPI,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (result) {
+                    console.log(result);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+        }
+
         $('#btnAddOrUpdate').click(function (e) {
             e.preventDefault(); // prevent default behavior of element HTML (a - href)
 
@@ -225,11 +242,8 @@
                 data[field.name] = field.value;
             });
             let id = $('#id').val();
-            console.log(data);
-
-
-
-
+            if (id==0)
+                addUser(data);
         })
 
     </script>

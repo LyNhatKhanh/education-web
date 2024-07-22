@@ -293,7 +293,6 @@ public class AdminController {
         List<Role> roles = roleService.findAll();
         model.addAttribute("roleCheckbox", roles);
 
-        // get List<String> of UserRole of userAccount
         if (userId != null) {
             userAccount = userAccountService.findById(userId);
             List<Role> userRoleRoles = userAccount.getUserRole().stream().map(userRole -> userRole.getRole()).collect(Collectors.toList());
