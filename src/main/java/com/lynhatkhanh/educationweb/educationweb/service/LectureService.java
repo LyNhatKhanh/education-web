@@ -12,4 +12,5 @@ public interface LectureService {
 
     Lecture save(Lecture lecture);
 
+
 }

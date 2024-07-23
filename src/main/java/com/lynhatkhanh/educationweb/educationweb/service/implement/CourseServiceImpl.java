@@ -60,19 +60,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Page<Course> getAll(Integer pageNo) {
+    public Page<Course> findAll(Integer pageNo) {
         Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
 
         return courseRepository.findAll(pageable);
     }
 
     @Override
-    public List<Course> searchCourse(String keyword) {
+    public List<Course> searchByKeyword(String keyword) {
         return courseRepository.searchCourse(keyword);
     }
 
     @Override
-    public Page<Course> searchCourse(String keyword, Integer pageNo) {
+    public Page<Course> searchByKeyword(String keyword, Integer pageNo) {
         List<Course> listCourse = courseRepository.searchCourse(keyword);
 
         Pageable pageable = PageRequest.of(pageNo-1,SystemConstant.PAGE_SIZE);
@@ -88,7 +88,7 @@ public class CourseServiceImpl implements CourseService {
         return new PageImpl<Course>(listCourse, pageable, courseRepository.searchCourse(keyword).size());
     }
 
-    @Override
+    /*@Override
     public void addUserToCourse(int userId, int courseId) {
         UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("UserAccount not found!"));
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found!"));
@@ -103,5 +103,5 @@ public class CourseServiceImpl implements CourseService {
 
         courseRepository.save(course);
         userAccountRepository.save(userAccount);
-    }
+    }*/
 }

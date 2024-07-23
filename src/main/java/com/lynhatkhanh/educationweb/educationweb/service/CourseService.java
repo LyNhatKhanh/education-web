@@ -15,11 +15,11 @@ public interface CourseService {
 
     void deleteById(int theId);
 
-    Page<Course> getAll(Integer pageNo);
+    Page<Course> findAll(Integer pageNo);
 
-    List<Course> searchCourse(String keyword);
+    List<Course> searchByKeyword(String keyword);
 
-    Page<Course> searchCourse(String keyword, Integer pageNo);
+    Page<Course> searchByKeyword(String keyword, Integer pageNo);
 
     void addUserToCourse(int userId, int courseId);
 }
