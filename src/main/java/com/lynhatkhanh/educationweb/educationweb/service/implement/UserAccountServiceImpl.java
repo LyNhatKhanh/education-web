@@ -27,12 +27,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount findByUserName(String userName) {
-        return userAccountRepository.findUserAccountByUserName(userName);
-    }
-
-    @Override
-    public UserAccount findUserAndUserRoleByUserId(String userName) {
+    public UserAccount findUserAndUserRoleByUsername(String userName) {
         return userAccountRepository.findUserAccountAndRoleByUserName(userName);
     }
 
@@ -43,28 +38,20 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserAccount findById(int userId) {
-        Optional<UserAccount> result = userAccountRepository.findById(userId);
-
-        UserAccount userAccount = null;
-        if (result.isPresent())
-            userAccount = result.get();
-        else
-            throw new RuntimeException("User is not found - " + userId);
-
-        return userAccount;
+        return userAccountRepository.findById(userId).orElseThrow(() -> new RuntimeException("User is not found - " + userId));
     }
 
     @Override
-    public void save(UserAccount userAccount) throws DuplicateUsernameException {
+    public UserAccount save(UserAccount userAccount) throws DuplicateUsernameException {
         try {
-            userAccountRepository.save(userAccount);
+            return userAccountRepository.save(userAccount);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateUsernameException("Username already exist!");
         }
     }
 
     @Override
-    public Page<UserAccount> getUsersOfRole(Integer pageNo, int roleId) {
+    public Page<UserAccount> findUsersOfRole(Integer pageNo, int roleId) {
         Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
         if (roleId == 0) {
             return userAccountRepository.findAll(pageable);
@@ -81,7 +68,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public List<UserAccount> getUsersOfRole(int roleId) {
+    public List<UserAccount> findUsersOfRole(int roleId) {
         return userAccountRepository.findUserAccountOfRole(roleId);
     }
 
@@ -125,5 +112,28 @@ public class UserAccountServiceImpl implements UserAccountService {
         return new PageImpl<>(showList, pageable, studentOfCourse.size());
     }
 
+    @Override
+    public Page<UserAccount> findAll(Integer pageNo) {
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        return userAccountRepository.findAll(pageable);
+    }
 
+    @Override
+    public List<UserAccount> searchByKeyword(String keyword) {
+        return userAccountRepository.searchUserAccount(keyword);
+    }
+
+    @Override
+    public Page<UserAccount> searchByKeyword(String keyword, Integer pageNo) {
+        List<UserAccount> userAccounts = userAccountRepository.searchUserAccount(keyword);
+
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+
+        Integer start = (int) pageable.getOffset();
+        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > userAccounts.size() ? userAccounts.size() : (pageable.getOffset() + pageable.getPageSize()));
+
+        List<UserAccount> showList = userAccounts.subList(start,end);
+
+        return new PageImpl<>(showList, pageable, userAccounts.size());
+    }
 }

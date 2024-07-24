@@ -34,11 +34,10 @@ public class CourseController {
     /* ============================== Course ============================== */
     @GetMapping("")
     public String showCourses(Model model,
-                              @Param("keyword") String keyword, @RequestParam(value = "message", required = false) String message,
+                              @RequestParam(value = "keyword", required = false) String keyword, @RequestParam(value = "message", required = false) String message,
                               @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo) {
-        if (message != null) {
+        if (message != null)
             MessageUtil.showMessage(message, model);
-        }
 
         Page<Course> listCourse = courseService.findAll(pageNo);
 
@@ -54,14 +53,14 @@ public class CourseController {
         return "admin/course";
     }
 
-    @GetMapping("/showForm")
+    @GetMapping("/form")
     public String showFormUpdateCourse(@RequestParam(value = "courseId", required = false) Integer theId, Model model) {
 
         Course theCourse = new Course();
         if (theId != null) {
             theCourse = courseService.findById(theId);
         }
-        List<UserAccount> instructorList = userAccountService.getUsersOfRole(3);
+        List<UserAccount> instructorList = userAccountService.findUsersOfRole(3);
 
         // send entity to template
         model.addAttribute("course", theCourse);
@@ -76,7 +75,7 @@ public class CourseController {
         String typeOfMessage = "";
 
         if (theBindingResult.hasErrors()) {
-            List<UserAccount> instructorList = userAccountService.getUsersOfRole(3);
+            List<UserAccount> instructorList = userAccountService.findUsersOfRole(3);
             model.addAttribute("course", theCourse);
             model.addAttribute("instructors", instructorList);
             return "admin/form/course-form";
@@ -107,11 +106,11 @@ public class CourseController {
         return "redirect:/admin/course";
     }
 
-    @GetMapping("/showStudentOfCourse")
+    @GetMapping("/studentOfCourse")
     public String showStudentOfCourse(Model model, @RequestParam(value = "message", required = false) String message,
                                       @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-                                      @RequestParam(value = "courseId") int courseId,
-                                      @Param(value = "keyword") String keyword) {
+//                                      @RequestParam(value = "keyword", required = false) String keyword,
+                                      @RequestParam(value = "courseId") int courseId) {
         if (message != null)
             MessageUtil.showMessage(message, model);
 
@@ -137,7 +136,7 @@ public class CourseController {
         return "redirect:/admin/course/showStudentOfCourse?courseId=" + courseId + "&message=delete_success";
     }
 
-    @GetMapping("/showStudentDetail")
+    @GetMapping("/studentDetail")
     public String showStudentDetail(@RequestParam("userId") int studentId, @RequestParam("courseId") int courseId, Model model) {
 
         UserAccount studentDetail = userAccountService.findById(studentId);

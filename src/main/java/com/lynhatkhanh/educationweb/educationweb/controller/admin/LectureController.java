@@ -4,15 +4,14 @@ import com.lynhatkhanh.educationweb.educationweb.model.Course;
 import com.lynhatkhanh.educationweb.educationweb.model.Lecture;
 import com.lynhatkhanh.educationweb.educationweb.service.CourseService;
 import com.lynhatkhanh.educationweb.educationweb.service.LectureService;
+import com.lynhatkhanh.educationweb.educationweb.utils.MessageUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,19 +33,31 @@ public class LectureController {
 
     @GetMapping("")
     public String showLecture(Model model, @RequestParam(value = "message", required = false) String message,
-                              @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo) {
-        /* TODO: set findAll(pageable) */
-        List<Lecture> lectures = lectureService.findAll();
+                              @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
+                              @RequestParam(value = "keyword", required = false) String keyword) {
 
-        model.addAttribute("lectures", lectures);
+        if (message != null)
+            MessageUtil.showMessage(message, model);
+
+        Page<Lecture> lecturePage = lectureService.findAll(pageNo);
+
+        if (keyword != null) {
+            lecturePage = lectureService.searchByKeyword(keyword, pageNo);
+            model.addAttribute("keyword", keyword);
+        }
+
+        model.addAttribute("totalPage", lecturePage.getTotalPages());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("lectures", lecturePage);
 
         return "admin/lecture";
     }
 
-    @GetMapping("/showFormUpdate")
-    public String showFormUpdateLecture(Model model, @RequestParam("lectureId") int lectureId) {
-
-        Lecture lecture = lectureService.findById(lectureId);
+    @GetMapping("/form")
+    public String showForm(Model model, @RequestParam(value = "lectureId", required = false) Integer lectureId) {
+        Lecture lecture = new Lecture();
+        if (lectureId != null)
+            lecture = lectureService.findById(lectureId);
         List<Course> courses = courseService.findAll();
 
         model.addAttribute("lecture", lecture);
@@ -55,7 +66,7 @@ public class LectureController {
         return "admin/form/lecture-form";
     }
 
-    @GetMapping("/save")
+    @PostMapping("/save")
     public String saveLecture(@Valid @ModelAttribute("lecture") Lecture lecture, BindingResult bindingResult, Model model,
                               @RequestParam("courseId-option") int courseId) {
 

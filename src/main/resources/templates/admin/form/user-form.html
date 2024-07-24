@@ -42,7 +42,7 @@
             </div>
 
             <!-- box body -->
-            <div class="box-body" style="min-height: 620px; font-size: 16px">
+            <div class="box-body" style=" font-size: 16px">
                 <div class="box">
                     <!-- form for POST method-->
                     <form th:action="@{/admin/user/save}" th:object="${userAccount}" method="post" id="formSubmit">
@@ -157,7 +157,6 @@
                         </div>
                         <div class="form-group" style="margin-top: 40px; height: 30px">
                             <label class="col-sm-2 control-label no-padding-right">Role</label>
-                            <!-- TODO: set name attribute -->
                             <span th:if="*{userRole == null}" class="checkBox">
                                 <span class="spanCover" >
                                     <span class="custom-control custom-checkbox" style="margin-right: 20px" th:each="roleCheckB : ${roleCheckbox}" id="checkbox-role">

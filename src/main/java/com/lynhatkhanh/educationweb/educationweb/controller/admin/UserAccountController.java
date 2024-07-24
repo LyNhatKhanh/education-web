@@ -63,7 +63,7 @@ public class UserAccountController {
             roleName = "all";
         }
 
-        Page<UserAccount> studentPages = userAccountService.getUsersOfRole(pageNo, roleId);
+        Page<UserAccount> studentPages = userAccountService.findUsersOfRole(pageNo, roleId);
 
         if (keyword != null) {
             studentPages = userAccountService.searchUsersOfRole(keyword, pageNo, roleId);
@@ -78,7 +78,7 @@ public class UserAccountController {
         return "admin/user";
     }
 
-    @GetMapping("/showForm")
+    @GetMapping("/form")
     public String showForm(@RequestParam(value = "userId", required = false) Integer userId, Model model) {
 
         UserAccount userAccount = new UserAccount();

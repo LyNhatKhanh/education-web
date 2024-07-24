@@ -31,7 +31,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserAccount user = userAccountService.findUserAndUserRoleByUserId(username);
+        UserAccount user = userAccountService.findUserAndUserRoleByUsername(username);
         System.out.println(username);
 //        System.out.println(user);
         if (user == null)

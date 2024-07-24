@@ -17,12 +17,12 @@ public class RestControllerClass {
 
     @GetMapping("/users")
     public ResponseEntity<Iterable<UserAccount>> findAll() {
-        return new ResponseEntity<>(userAccountService.getUsersOfRole(1,0), HttpStatus.OK);
+        return new ResponseEntity<>(userAccountService.findUsersOfRole(1,0), HttpStatus.OK);
     }
 
     @GetMapping("/student")
     public ResponseEntity<Iterable<UserAccount>> findStudent() {
-        return new ResponseEntity<>(userAccountService.getUsersOfRole(1,2), HttpStatus.OK);
+        return new ResponseEntity<>(userAccountService.findUsersOfRole(1,2), HttpStatus.OK);
     }
 
     @PostMapping("/users")
