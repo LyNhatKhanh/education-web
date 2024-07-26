@@ -2,6 +2,7 @@ package com.lynhatkhanh.educationweb.educationweb.controller.admin;
 
 import com.lynhatkhanh.educationweb.educationweb.model.Course;
 import com.lynhatkhanh.educationweb.educationweb.model.Lecture;
+import com.lynhatkhanh.educationweb.educationweb.model.UserAccount;
 import com.lynhatkhanh.educationweb.educationweb.service.CourseService;
 import com.lynhatkhanh.educationweb.educationweb.service.LectureService;
 import com.lynhatkhanh.educationweb.educationweb.utils.MessageUtil;
@@ -13,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -48,6 +51,7 @@ public class LectureController {
 
         model.addAttribute("totalPage", lecturePage.getTotalPages());
         model.addAttribute("currentPage", pageNo);
+        model.addAttribute("pageSize", lecturePage.getSize());
         model.addAttribute("lectures", lecturePage);
 
         return "admin/lecture";
@@ -59,6 +63,9 @@ public class LectureController {
         if (lectureId != null)
             lecture = lectureService.findById(lectureId);
         List<Course> courses = courseService.findAll();
+
+        List<Boolean> enableOption = Arrays.asList(true, false);
+        model.addAttribute("enableOption", enableOption);
 
         model.addAttribute("lecture", lecture);
         model.addAttribute("courses", courses);
@@ -83,12 +90,18 @@ public class LectureController {
                 typeOfMessage = "update_success";
             else
                 typeOfMessage = "insert_success";
-            lecture.setCourseId(courseService.findById(courseId));
+            if (courseId != 0)
+                lecture.setCourseId(courseService.findById(courseId));
             lectureService.save(lecture);
             return "redirect:/admin/lecture?message=" + typeOfMessage;
         }
     }
 
+    @GetMapping("/deleteLecture")
+    public String deleteLecture(@RequestParam("lectureId") int lectureId) {
+        lectureService.deleteById(lectureId);
+        return "redirect:/admin/lecture?message=delete_success";
+    }
 
     /* ============================== End-Lecture ============================== */
 

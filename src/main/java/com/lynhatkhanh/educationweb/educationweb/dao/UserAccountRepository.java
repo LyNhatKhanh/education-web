@@ -39,4 +39,9 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Integ
             "WHERE cs.course.id = :courseId")
     List<UserAccount> findUserAccountOfCourse(@Param("courseId") int courseId);
 
+    @Query("SELECT s FROM UserAccount AS s " +
+            "INNER JOIN UserRole AS ur ON s.id = ur.userAccount.id " +
+            "WHERE ur.role.id = 2 AND s.enrolledCourses IS EMPTY")
+    List<UserAccount> findStudentWithoutCourse();
+
 }

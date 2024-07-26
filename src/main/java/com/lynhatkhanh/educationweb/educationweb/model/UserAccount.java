@@ -71,7 +71,7 @@ public class UserAccount extends BaseEntity {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private Set<CourseUser> enrolledCourses;
+    private Set<CourseUser> enrolledCourses = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY)

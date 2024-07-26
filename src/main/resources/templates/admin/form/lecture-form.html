@@ -33,7 +33,7 @@
                 <div class="box-header with-border">
 
                     <!-- left side-->
-                    <h3>Save Course</h3>
+                    <h3>Save Lecture</h3>
 
                     <!-- right side-->
                     <div class="box-tools pull-right">
@@ -68,14 +68,14 @@
                                 <div class="form-control-error">
                                     <select class="col-sm-12" th:name="courseId-option"
                                             style="font-size: 16px; height: 22px"
-                                            required id="course-selector">
+                                            id="course-selector">
                                         <span th:if="*{courseId == null}">
-                                            <option value="">Choose course</option>
+                                            <option value="0">Choose course</option>
                                             <option th:each="course : ${courses}" th:value="${course.id}"
                                                     th:text="${course.title}"></option>
                                         </span>
                                         <span th:if="*{courseId != null}">
-                                            <option value="">Choose course</option>
+                                            <option value="0">Choose course</option>
                                             <option th:each="course : ${courses}" th:value="${course.id}"
                                                     th:text="${course.title}"
                                                     th:selected="${course == lecture.courseId}"></option>
@@ -83,6 +83,26 @@
                                     </select>
                                 </div>
                             </div>
+
+                            <div class="form-group" style="margin-top: 40px; height: 30px">
+                                <label class="col-sm-2 control-label no-padding-right">Enable</label>
+                                <select class="col-sm-10" th:field="*{enabled}" >
+                                <span th:if="*{enabled == null}">
+                                    <option value="">Choose option</option>
+                                    <option th:each="enableChoose : ${enableOption}" th:value="${enableChoose}"
+                                            th:text="${enableChoose}"></option>
+                                </span>
+                                    <span th:if="*{enabled != null}">
+                                    <option value="">Choose option</option>
+                                    <option th:each="enableChoose : ${enableOption}" th:value="${enableChoose}"
+                                            th:text="${enableChoose}" th:selected="${enableChoose == lecture.enabled}"></option>
+                                </span>
+                                </select>
+                                <!-- add error message (if presence) -->
+                                <p th:if="${#fields.hasErrors('enabled')}"
+                                   th:errors="*{enabled}" class="error-message"></p>
+                            </div>
+
                             <div class="form-group" style="margin: 40px 0">
                                 <label class="col-sm-2 control-label no-padding-right">Content</label>
                                 <div class="form-control-error">

@@ -15,8 +15,8 @@ public interface UserAccountService extends GenericService<UserAccount> {
 
     Page<UserAccount> searchUsersOfRole(String keyword, Integer pageNo, int roleId);
 
-    Page<UserAccount> getStudentOfCourse(Integer pageNo, int courseId);
+    Page<UserAccount> findStudentOfCourse(Integer pageNo, int courseId);
 
-
+    Page<UserAccount> findStudentWithoutCourse(Integer pageNo);
 
 }

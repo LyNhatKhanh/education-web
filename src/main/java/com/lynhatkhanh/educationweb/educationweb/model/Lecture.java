@@ -1,5 +1,6 @@
 package com.lynhatkhanh.educationweb.educationweb.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -15,14 +16,18 @@ public class Lecture extends BaseEntity {
     @NotBlank(message = "Title is required!")
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
+
+    @Column(name = "enabled")
+    private Boolean enabled;
 
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE,
                     CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "course_id")
+    @JsonBackReference
     private Course courseId;
 
     // define constructor
@@ -30,21 +35,18 @@ public class Lecture extends BaseEntity {
     public Lecture() {
     }
 
-    public Lecture(String title, String content, Course courseId) {
-        this.title = title;
-        this.content = content;
-        this.courseId = courseId;
-    }
-
-    public Lecture(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
-
-    public Lecture(Date createdDate, Date modifiedDate, String createdBy, String modifiedBy, String title, String content, Course courseId) {
+    public Lecture(Date createdDate, Date modifiedDate, String createdBy, String modifiedBy, String title, String content, boolean enabled, Course courseId) {
         super(createdDate, modifiedDate, createdBy, modifiedBy);
         this.title = title;
         this.content = content;
+        this.enabled = enabled;
+        this.courseId = courseId;
+    }
+
+    public Lecture(String title, String content, boolean enabled, Course courseId) {
+        this.title = title;
+        this.content = content;
+        this.enabled = enabled;
         this.courseId = courseId;
     }
 
@@ -74,15 +76,15 @@ public class Lecture extends BaseEntity {
         this.courseId = courseId;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
 
     // define toString()
 
-    @Override
-    public String toString() {
-        return "Lecture{" +
-                "title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", courseId=" + courseId +
-                '}';
-    }
+
 }

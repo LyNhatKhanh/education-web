@@ -1,5 +1,6 @@
 package com.lynhatkhanh.educationweb.educationweb.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +24,9 @@ public class Course extends BaseEntity {
             mappedBy = "courseId",
             fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE,
-                    CascadeType.PERSIST, CascadeType.REFRESH})
+                    CascadeType.PERSIST, CascadeType.REFRESH},
+            orphanRemoval = true)
+    @JsonManagedReference
     private List<Lecture> listLecture;
 
     @OneToMany(
@@ -94,13 +97,4 @@ public class Course extends BaseEntity {
     // =========== define toString() ===========
 
 
-    @Override
-    public String toString() {
-        return "Course{" +
-                "title='" + title + '\'' +
-                ", listLecture=" + listLecture +
-                ", courseStudents=" + courseStudents +
-                ", instructor=" + instructor +
-                '}';
-    }
 }

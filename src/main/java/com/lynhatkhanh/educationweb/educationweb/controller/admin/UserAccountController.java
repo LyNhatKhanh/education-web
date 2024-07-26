@@ -73,6 +73,7 @@ public class UserAccountController {
         model.addAttribute("roleName", roleName);
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPage", studentPages.getTotalPages());
+        model.addAttribute("pageSize", studentPages.getSize());
         model.addAttribute("userAccounts", studentPages);
 
         return "admin/user";
@@ -161,7 +162,6 @@ public class UserAccountController {
                     }
                 }
             }
-            inDatabase.setModifiedDate(new Timestamp(System.currentTimeMillis()));
 
             userAccountService.save(inDatabase);
             System.out.println("saving...");
@@ -201,7 +201,7 @@ public class UserAccountController {
         }
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/deleteUser")
     public String deleteUser(@RequestParam("userId") int userId) {
         userAccountService.deleteById(userId);
         return "redirect:/admin/user?message=delete_success";

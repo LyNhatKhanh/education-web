@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public void deleteById(int theId) {
         lectureRepository.deleteById(theId);
     }
@@ -66,8 +68,36 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public Lecture save(Lecture lecture) {
         return lectureRepository.save(lecture);
     }
 
+    @Override
+    public Page<Lecture> findLectureOfCourse(Integer pageNo, int courseId) {
+        List<Lecture> lectureOfCourse = lectureRepository.findLectureOfCourse(courseId);
+
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+
+        Integer start = (int) pageable.getOffset();
+        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > lectureOfCourse.size() ? lectureOfCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
+
+        List<Lecture> showList = lectureOfCourse.subList(start, end);
+
+        return new PageImpl<>(showList, pageable, lectureOfCourse.size());
+    }
+
+    @Override
+    public Page<Lecture> findLectureWithoutCourse(Integer pageNo) {
+        List<Lecture> lectureWithoutCourse = lectureRepository.findLectureWithoutCourse();
+
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+
+        Integer start = (int) pageable.getOffset();
+        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > lectureWithoutCourse.size() ? lectureWithoutCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
+
+        List<Lecture> showList = lectureWithoutCourse.subList(start, end);
+
+        return new PageImpl<>(showList, pageable, lectureWithoutCourse.size());
+    }
 }

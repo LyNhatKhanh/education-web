@@ -12,7 +12,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +44,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    @Transactional
     public UserAccount save(UserAccount userAccount) throws DuplicateUsernameException {
         try {
             return userAccountRepository.save(userAccount);
@@ -94,12 +97,13 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    @Transactional
     public void deleteById(int theId) {
         userAccountRepository.deleteById(theId);
     }
 
     @Override
-    public Page<UserAccount> getStudentOfCourse(Integer pageNo, int courseId) {
+    public Page<UserAccount> findStudentOfCourse(Integer pageNo, int courseId) {
         List<UserAccount> studentOfCourse = userAccountRepository.findUserAccountOfCourse(courseId);
 
         Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
@@ -110,6 +114,26 @@ public class UserAccountServiceImpl implements UserAccountService {
         List<UserAccount> showList = studentOfCourse.subList(start, end);
 
         return new PageImpl<>(showList, pageable, studentOfCourse.size());
+    }
+
+    @Override
+    public Page<UserAccount> findStudentWithoutCourse(Integer pageNo) {
+        List<UserAccount> allStudents = userAccountRepository.findStudentWithoutCourse();
+        List<UserAccount> studentWithoutCourse = new ArrayList<>();
+
+        for (UserAccount student : allStudents) {
+            if (student.getUserRole().size() == 1)
+                studentWithoutCourse.add(student);
+        }
+
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+
+        Integer start = (int) pageable.getOffset();
+        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > studentWithoutCourse.size() ? studentWithoutCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
+
+        List<UserAccount> showList = studentWithoutCourse.subList(start, end);
+
+        return new PageImpl<>(showList, pageable, studentWithoutCourse.size());
     }
 
     @Override

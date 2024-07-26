@@ -3,42 +3,45 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/admin/admin.html}">
 <head>
-    <title>Course</title>
+    <title>Title</title>
 </head>
 <body>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper" layout:fragment="content">
+
     <!-- Content Header (Page header) -->
     <section class="content-header">
+
         <h1>
-            Course List
-            <small>All of our Courses</small>
+            Student List
+            <small>All of our Students</small>
         </h1>
+
         <ol class="breadcrumb"> <!-- change column-list to row-list -->
             <li><a th:href="@{/admin/index}"><i class="fa fa-dashboard"></i>Home</a></li>
             <li><a th:href="@{#}">Management</a></li>
             <li><a th:href="@{#}">Manage Course - Lecture</a></li>
-            <li class="active" th:href="@{/admin/course}">Course</li>
+            <li><a th:href="@{/admin/course}">Course</a></li>
+            <li><a th:href="@{/admin/course/form(courseId=${course.id})}">Course Information</a></li>
+            <li><a th:href="@{/admin/course/studentOfCourse(courseId=${course.id})}">Students of Course</a></li>
+            <li class="active">Add-student list</li>
         </ol>
+
     </section>
+    <!-- End Content Header (Page header) -->
 
     <!-- Main content -->
     <section class="content">
 
         <!-- Default box -->
         <div class="box">
+
             <!-- box header -->
             <div class="box-header with-border">
+
                 <!-- left side-->
-                <a flag="info"
-                   class="dt-button buttons-colvis btn btn-white btn-primary btn-bold"
-                   data-toggle="tooltip"
-                   title='Thêm bài viết' th:href="@{/admin/course/form}">
-                    <span>
-                        <i class="fa fa-plus-circle bigger-110 purple"></i>
-                    </span>
-                    <span>Add new Course</span>
-                </a>
+                <h3>Add Student to Course - <span th:text="'&quot;' + ${course.title} + '&quot;'" style="color: cornflowerblue;"></span></h3>
 
                 <!-- right side-->
                 <div class="box-tools pull-right">
@@ -49,10 +52,14 @@
                             title="Remove">
                         <i class="fa fa-times"></i></button>
                 </div>
+
             </div>
+            <!-- End box header -->
 
             <!-- box body -->
             <div class="box-body">
+
+                <!-- box body - wrapper -->
                 <div class="box">
 
                     <!-- box search -->
@@ -62,6 +69,7 @@
                             <input type="text" name="keyword" class="form-control pull-right" placeholder="Search">
 
                             <!-- button submit -->
+                            <!-- submit form without th:action => @GetMapping("/user") - URL of itself -->
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                             </div>
@@ -75,40 +83,44 @@
                         </div>
                     </div>
 
+                    <!-- box body of body -->
                     <div class="box-body">
                         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-                            <div class="row">
-                                <div class="col-sm-6"></div>
-                                <div class="col-sm-6"></div>
-                            </div>
+
+                            <!-- Table -->
                             <div class="row">
                                 <div class="col-sm-12">
                                     <table id="example2" class="table table-bordered table-hover dataTable" role="grid"
                                            aria-describedby="example2_info">
                                         <thead>
                                         <tr role="row" class="d-flex">
-                                            <th class="sorting_asc col-sm-1" tabindex="0" aria-controls="example2" rowspan="1"
+                                            <th class="sorting_asc col-sm-0.5" tabindex="0" aria-controls="example2" rowspan="1"
                                                 colspan="1" aria-sort="ascending"
                                                 aria-label="Rendering engine: activate to sort column descending"
                                                 style="text-align: center;">
                                                 Id
                                             </th>
-                                            <th class="sorting col-sm-5" tabindex="0" aria-controls="example2" rowspan="1"
+                                            <th class="sorting col-sm-2.5" tabindex="0" aria-controls="example2" rowspan="1"
                                                 colspan="1" aria-label="Browser: activate to sort column ascending"
                                                 style="text-align: center;">
-                                                Title
+                                                Username
                                             </th>
-                                            <th class="sorting col-sm-2" tabindex="0" aria-controls="example2" rowspan="1"
+                                            <th class="sorting col-sm-2.5" tabindex="0" aria-controls="example2" rowspan="1"
                                                 colspan="1" aria-label="Browser: activate to sort column ascending"
                                                 style="text-align: center;">
-                                                Lectures
+                                                Full Name
                                             </th>
-                                            <th class="sorting col-sm-2" tabindex="0" aria-controls="example2" rowspan="1"
+                                            <th class="sorting col-sm-3" tabindex="0" aria-controls="example2" rowspan="1"
                                                 colspan="1" aria-label="Browser: activate to sort column ascending"
                                                 style="text-align: center;">
-                                                Students
+                                                Email
                                             </th>
-                                            <th class="sorting col-sm-2" tabindex="0" aria-controls="example2" rowspan="1"
+                                            <th class="sorting col-sm-0.5" tabindex="0" aria-controls="example2" rowspan="1"
+                                                colspan="1" aria-label="Browser: activate to sort column ascending"
+                                                style="text-align: center;">
+                                                Enable
+                                            </th>
+                                            <th class="sorting col-sm-3" tabindex="0" aria-controls="example2" rowspan="1"
                                                 colspan="1" aria-label="Browser: activate to sort column ascending"
                                                 style="text-align: center;">
                                                 Action
@@ -116,45 +128,48 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr role="row" th:each="tempCourse, iter : ${courses}" class="d-flex">
-                                            <td th:text="${iter.count + (currentPage * pageSize) - pageSize}" class="col-sm-1" style="text-align: center;"></td>
-                                            <td th:text="${tempCourse.title}" class="col-sm-5" style="padding-left: 30px;"></td>
-                                            <td class="col-sm-2" style="text-align: center;">
-                                                <a th:href="@{/admin/course/lectureOfCourse(courseId=${tempCourse.id})}" class="btn btn-info btn-sm">View</a>
-                                            </td>
-                                            <td class="col-sm-2" style="text-align: center;">
-                                                <a th:href="@{/admin/course/studentOfCourse(courseId=${tempCourse.id})}" class="btn btn-info btn-sm">View</a>
-                                            </td>
-                                            <td class="col-sm-2" style="text-align: center;">
-                                                <a th:href="@{/admin/course/form(courseId=${tempCourse.id})}" class="btn btn-primary btn-sm">Update</a>
-                                                <a th:href="@{/admin/course/deleteCourse(courseId=${tempCourse.id})}"
-                                                   class="btn btn-danger btn-sm"
-                                                   onclick="if (!(confirm('Are you sure you want to delete this course?'))) return false">Delete</a>
+                                        <tr role="row" th:each="user, iter : ${userAccounts}" class="d-flex">
+                                            <td th:text="${iter.count + (currentPage * pageSize) - pageSize}" style="text-align: center;"></td>
+                                            <td th:text="${user.userName}" style="padding-left: 30px;"></td>
+                                            <td th:text="${user.firstName + ' ' + user.lastName}" style="padding-left: 30px;"></td>
+                                            <td th:text="${user.email}" style="padding-left: 30px;"></td>
+                                            <td th:text="${user.enabled}" style="text-align: center;"></td>
+
+                                            <td class="col-sm-3" style="text-align: center;">
+                                                <a th:href="@{/admin/course/studentDetail(userId=${user.id}, courseId=${course.id})}" class="btn btn-info btn-sm">Detail</a>
+                                                <a th:href="@{/admin/course/studentOfCourse/listAdd/addStudentToCourse(userId=${user.id}, courseId=${course.id})}" class="btn btn-success btn-sm">Add to Course</a>
                                             </td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+                            <!-- End Table -->
+
+                            <!-- pagination -->
                             <div class="row">
+
                                 <div class="col-sm-5">
                                     <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
                                         Showing 1 to 10 of 57 entries
                                     </div>
                                 </div>
+
                                 <div class="col-sm-7">
                                     <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                                         <ul class="pagination">
                                             <!-- Previous -->
                                             <li th:if="${currentPage > 1}" class="paginate_button previous" id="example2_previous"
                                                 th:classappend="${currentPage == 1 ? 'disabled' : ''}">
-                                                <a th:href="@{'?pageNo=' + ${currentPage - 1}}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
+                                                <!--                                                <a th:href="@{'?pageNo=' + ${currentPage - 1} + '&roleName=' + ${roleName}}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>-->
+                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${currentPage - 1} + '&courseId=' + ${course.id}}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
                                             </li>
 
                                             <li class="paginate_button"
                                                 th:each="i : ${#numbers.sequence(1,totalPage)}"
                                                 th:classappend="${currentPage == i ? 'active' : ''}">
-                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo='+${i}}" aria-controls="example2" data-dt-idx="1"
+                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${i} + '&courseId=' + ${course.id}}"
+                                                   aria-controls="example2" data-dt-idx="1"
                                                    tabindex="0"
                                                    th:text="${i}"></a>
                                             </li>
@@ -162,24 +177,43 @@
                                             <!-- Next -->
                                             <li th:if="${currentPage < totalPage}" class="paginate_button" id="example2_next"
                                                 th:classappend="${currentPage == totalPage ? 'disabled' : ''}">
-                                                <a th:href="@{'?pageNo=' + ${currentPage + 1}}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>
+                                                <!--                                                <a th:href="@{'?pageNo=' + ${currentPage + 1} + '&roleName=' + ${roleName}}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>-->
+                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${currentPage + 1} + '&courseId=' + ${course.id}}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>
                                             </li>
 
                                         </ul>
                                     </div>
                                 </div>
+
                             </div>
+
                         </div>
+                        <!-- End pagination -->
+
                     </div>
+                    <!-- End box body of body -->
 
                 </div>
+                <!-- End box body - wrapper -->
+
+                <!-- box footer -->
+                <div class="box-footer">
+                    <div class="box">
+                        <a th:href="@{/admin/course/studentOfCourse(courseId=${course.id})}" class="control-label">Back to Students of Course</a>
+                    </div>
+                </div>
+                <!-- End box footer -->
+
             </div>
+            <!-- End box body -->
+
         </div>
-        <!-- /.box -->
+        <!-- End Default box -->
 
     </section>
-    <!-- /.content -->
+    <!-- End Main content -->
+
 </div>
-<!-- /.content-wrapper -->
+
 </body>
 </html>

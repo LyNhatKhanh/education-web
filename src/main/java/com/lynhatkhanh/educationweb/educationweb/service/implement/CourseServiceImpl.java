@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public Course save(Course theCourse) {
         return courseRepository.save(theCourse);
     }
@@ -55,6 +57,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public void deleteById(int theId) {
         courseRepository.deleteById(theId);
     }
@@ -85,7 +88,7 @@ public class CourseServiceImpl implements CourseService {
 
         listCourse = listCourse.subList(start, end);
 
-        return new PageImpl<Course>(listCourse, pageable, courseRepository.searchCourse(keyword).size());
+        return new PageImpl<>(listCourse, pageable, courseRepository.searchCourse(keyword).size());
     }
 
     /*@Override

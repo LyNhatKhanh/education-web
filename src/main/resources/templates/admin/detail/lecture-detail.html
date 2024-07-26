@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/admin/admin.html}">
 <head>
-    <title>User Detail</title>
+    <title>Lecture Detail</title>
 </head>
 <body>
 
@@ -19,8 +19,8 @@
         <li><a th:href="@{#}">Manage Course - Lecture</a></li>
         <li><a th:href="@{/admin/course}">Course</a></li>
         <li><a th:href="@{/admin/course/form(courseId=${courseId})}">Course Information</a></li>
-        <li><a th:href="@{/admin/course/studentOfCourse(courseId=${courseId})}">Students of Course</a></li>
-        <li class="active">Detail of Student</li>
+        <li><a th:href="@{/admin/course/lectureOfCourse(courseId=${courseId})}">Lecture of Course</a></li>
+        <li class="active">Detail of Lecture</li>
       </ol>
     </section>
 
@@ -33,7 +33,7 @@
         <!-- box header -->
         <div class="box-header with-border">
           <!-- left side-->
-          <h3>User Detail - <span th:text="'&quot;' + ${userAccount.userName} + '&quot;'" style="color: cornflowerblue; text-transform: uppercase;"></span></h3>
+          <h3>Preview of the lecture - <span th:text="'&quot;' + ${lecture.title} + '&quot;'" style="color: cornflowerblue;"></span></h3>
           <!-- right side-->
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
@@ -52,45 +52,17 @@
         <div class="box-body">
           <div class="box">
 
-            <div class="container">
-              <div class="form-group user-detail">
-                <label for="firstName">First Name</label>
-                <p th:text="${userAccount.firstName}" id="firstName"></p>
-              </div>
+            <div class="container" style="max-width: 800px">
+
+
+              <!--<div class="form-group user-detail">
+                <label for="courseId">Course</label>
+                <p th:if="${lecture.courseId != null}" th:text="${lecture.courseId.title}" id="courseId"></p>
+                <p th:if="${lecture.courseId == null}"  th:text="'Empty'" id="courseId" style="font-style: italic; color: gray"></p>
+              </div>-->
 
               <div class="form-group user-detail">
-                <label for="lastName">Last Name</label>
-                <p th:text="${userAccount.lastName}" id="lastName"></p>
-              </div>
-
-              <div class="form-group user-detail">
-                <label for="userName">Username</label>
-                <p th:text="${userAccount.userName}" id="userName"></p>
-              </div>
-
-              <div class="form-group user-detail">
-                <label for="gender">Gender</label>
-                <p th:text="${userAccount.gender}" id="gender"></p>
-              </div>
-
-              <div class="form-group user-detail">
-                <label for="addresss">Address</label>
-                <p th:text="${userAccount.address}" id="addresss"></p>
-              </div>
-
-              <div class="form-group user-detail">
-                <label for="email">Email</label>
-                <p th:text="${userAccount.email}" id="email"></p>
-              </div>
-
-              <div class="form-group user-detail">
-                <label for="telephone">Telephone</label>
-                <p th:text="${userAccount.telephone}" id="telephone"></p>
-              </div>
-
-              <div class="form-group user-detail">
-                <label for="enable">Enable</label>
-                <p th:text="${userAccount.enabled}" id="enable"></p>
+                <div th:utext="${lecture.content}"></div>
               </div>
             </div>
 
@@ -102,7 +74,7 @@
         <!-- box footer -->
         <div class="box-footer">
           <div class="box">
-            <a th:href="@{/admin/course/studentOfCourse(courseId=${courseId})}" class="control-label">Back to Student List of Course</a>
+            <a th:href="@{/admin/course/lectureOfCourse(courseId=${courseId})}" class="control-label">Back to Lecture List of Course</a>
           </div>
         </div>
         <!-- box footer -->

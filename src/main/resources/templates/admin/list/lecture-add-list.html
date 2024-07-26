@@ -3,41 +3,45 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/admin/admin.html}">
 <head>
-    <title>User</title>
+    <title>Title</title>
 </head>
 <body>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper" layout:fragment="content">
+
     <!-- Content Header (Page header) -->
     <section class="content-header">
+
         <h1>
             Lecture List
-            <small>All of our Lectures</small>
+            <small>All of our Lecture</small>
         </h1>
+
         <ol class="breadcrumb"> <!-- change column-list to row-list -->
-            <li><a th:href="@{/admin/index.html}"><i class="fa fa-dashboard"></i>Home</a></li>
+            <li><a th:href="@{/admin/index}"><i class="fa fa-dashboard"></i>Home</a></li>
             <li><a th:href="@{#}">Management</a></li>
-            <li><a th:href="@{#}">Manage Lecture</a></li>
-            <li class="active">All Lectures</li>
+            <li><a th:href="@{#}">Manage Course - Lecture</a></li>
+            <li><a th:href="@{/admin/course}">Course</a></li>
+            <li><a th:href="@{/admin/course/form(courseId=${course.id})}">Course Information</a></li>
+            <li><a th:href="@{/admin/course/lectureOfCourse(courseId=${course.id})}">Lecture of Course</a></li>
+            <li class="active">Add-lecture list</li>
         </ol>
+
     </section>
+    <!-- End Content Header (Page header) -->
+
     <!-- Main content -->
     <section class="content">
 
         <!-- Default box -->
         <div class="box">
+
             <!-- box header -->
             <div class="box-header with-border">
+
                 <!-- left side-->
-                <a flag="info"
-                   class="dt-button buttons-colvis btn btn-white btn-primary btn-bold"
-                   data-toggle="tooltip"
-                   title='Thêm bài viết' th:href="@{/admin/lecture/form}">
-                    <span>
-                        <i class="fa fa-plus-circle bigger-110 purple"></i>
-                    </span>
-                    <span>Add new Lecture</span>
-                </a>
+                <h3>Add Lecture to Course - <span th:text="'&quot;' + ${course.title} + '&quot;'" style="color: cornflowerblue;"></span></h3>
 
                 <!-- right side-->
                 <div class="box-tools pull-right">
@@ -48,26 +52,40 @@
                             title="Remove">
                         <i class="fa fa-times"></i></button>
                 </div>
+
             </div>
+            <!-- End box header -->
 
             <!-- box body -->
             <div class="box-body">
+
+                <!-- box body - wrapper -->
                 <div class="box">
 
-                    <!-- box search -->
-                    <form>
-                        <div class="input-group input-group-sm" style="width: 150px;">
-                            <!-- input -->
-                            <input type="text" name="keyword" class="form-control pull-right" placeholder="Search">
-                            <input type="hidden" name="roleName" th:value="${roleName}">
+                    <div class="box-header">
+                        <!-- box search -->
+                        <form>
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <!-- input -->
+                                <input type="text" name="keyword" class="form-control pull-right" placeholder="Search">
 
-                            <!-- button submit -->
-                            <!-- submit form without th:action => @GetMapping("/user") - URL of itself -->
-                            <div class="input-group-btn">
-                                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                <!-- button submit -->
+                                <!-- submit form without th:action => @GetMapping("/user") - URL of itself -->
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                </div>
                             </div>
+                        </form>
+
+                        <div class="box-tools pull-right" style="margin-top: 5px;">
+                            <form id="formAddSelected">
+                                <input type="hidden" id="ids" name="ids">
+                                <button type="submit" class="btn btn-block btn-success btn-sm" id="btnAdd">
+                                    <i class="fa fa-plus-circle" style="margin-right: 5px;"></i>Add selected
+                                </button>
+                            </form>
                         </div>
-                    </form>
+                    </div>
 
                     <!-- Alert Create new account success -->
                     <div th:if="${param.message != null}" class="message">
@@ -76,35 +94,37 @@
                         </div>
                     </div>
 
+                    <!-- box body of body -->
                     <div class="box-body">
                         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-                            <!--<div class="row">
-                                <div class="col-sm-6"></div>
-                                <div class="col-sm-6"></div>
-                            </div>-->
+
+                            <!-- Table -->
                             <div class="row">
                                 <div class="col-sm-12">
                                     <table id="example2" class="table table-bordered table-hover dataTable" role="grid"
                                            aria-describedby="example2_info">
                                         <thead>
                                         <tr role="row" class="d-flex">
-                                            <th class="sorting_asc col-sm-1" tabindex="0" aria-controls="example2" rowspan="1"
+                                            <!--<th class="sorting_asc col-sm-1" tabindex="0" aria-controls="example2"
+                                                rowspan="1"
                                                 colspan="1" aria-sort="ascending"
                                                 aria-label="Rendering engine: activate to sort column descending"
                                                 style="text-align: center;">
                                                 Id
+                                            </th>-->
+                                            <th class="sorting_asc col-sm-1" tabindex="0" aria-controls="example2"
+                                                rowspan="1"
+                                                colspan="1" aria-sort="ascending"
+                                                aria-label="Rendering engine: activate to sort column descending"
+                                                style="text-align: center;">
+                                                <input type="checkbox" id="checkAll">
                                             </th>
-                                            <th class="sorting col-sm-4" tabindex="0" aria-controls="example2" rowspan="1"
+                                            <th class="sorting col-sm-6" tabindex="0" aria-controls="example2" rowspan="1"
                                                 colspan="1" aria-label="Browser: activate to sort column ascending"
                                                 style="text-align: center;">
                                                 Title
                                             </th>
-                                            <th class="sorting col-sm-3" tabindex="0" aria-controls="example2" rowspan="1"
-                                                colspan="1" aria-label="Browser: activate to sort column ascending"
-                                                style="text-align: center;">
-                                                Course
-                                            </th>
-                                            <th class="sorting col-sm-1" tabindex="0" aria-controls="example2" rowspan="1"
+                                            <th class="sorting col-sm-2" tabindex="0" aria-controls="example2" rowspan="1"
                                                 colspan="1" aria-label="Browser: activate to sort column ascending"
                                                 style="text-align: center;">
                                                 Enable
@@ -118,29 +138,31 @@
                                         </thead>
                                         <tbody>
                                         <tr role="row" th:each="lecture, iter : ${lectures}" class="d-flex">
-                                            <td th:text="${iter.count + (currentPage * pageSize) - pageSize}" style="text-align: center;"></td>
+                                            <!--<td th:text="${iter.count + (currentPage * pageSize) - pageSize}" style="text-align: center;"></td>-->
+                                            <td style="text-align: center;"><input type="checkbox" th:id="'checkbox_' + ${lecture.id}" th:value="${lecture.id}"></td>
                                             <td th:text="${lecture.title}" style="padding-left: 30px;"></td>
-                                            <td th:if="${lecture.courseId != null}" th:text="${lecture.courseId.title}" style="padding-left: 30px;"></td>
-                                            <td th:if="${lecture.courseId == null}" th:text="'- Empty Course -'" style="text-align: center; font-style: italic; color: gray"></td>
                                             <td th:text="${lecture.enabled}" style="text-align: center;"></td>
 
                                             <td class="col-sm-3" style="text-align: center;">
-                                                <a th:href="@{/admin/lecture/form(lectureId=${lecture.id})}" class="btn btn-primary btn-sm">Update</a>
-                                                <a th:href="@{/admin/lecture/deleteLecture(lectureId=${lecture.id})}"
-                                                   class="btn btn-danger btn-sm"
-                                                   onclick="if (!(confirm('Are you sure you want to delete this user?'))) return false">Delete</a>
+                                                <a th:href="@{/admin/course/lectureDetail(lectureId=${lecture.id}, courseId=${course.id})}" class="btn btn-info btn-sm">Detail</a>
+                                                <a th:href="@{/admin/course/lectureOfCourse/listAdd/addLectureToCourse(lectureId=${lecture.id}, courseId=${course.id})}" class="btn btn-success btn-sm">Add to Course</a>
                                             </td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+                            <!-- End Table -->
+
+                            <!-- pagination -->
                             <div class="row">
+
                                 <div class="col-sm-5">
                                     <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
                                         Showing 1 to 10 of 57 entries
                                     </div>
                                 </div>
+
                                 <div class="col-sm-7">
                                     <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                                         <ul class="pagination">
@@ -148,13 +170,13 @@
                                             <li th:if="${currentPage > 1}" class="paginate_button previous" id="example2_previous"
                                                 th:classappend="${currentPage == 1 ? 'disabled' : ''}">
                                                 <!--                                                <a th:href="@{'?pageNo=' + ${currentPage - 1} + '&roleName=' + ${roleName}}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>-->
-                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${currentPage - 1} + '&roleName=' + ${roleName}}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
+                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${currentPage - 1} + '&courseId=' + ${course.id}}" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
                                             </li>
 
                                             <li class="paginate_button"
                                                 th:each="i : ${#numbers.sequence(1,totalPage)}"
                                                 th:classappend="${currentPage == i ? 'active' : ''}">
-                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${i} + '&roleName=' + ${roleName}}"
+                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${i} + '&courseId=' + ${course.id}}"
                                                    aria-controls="example2" data-dt-idx="1"
                                                    tabindex="0"
                                                    th:text="${i}"></a>
@@ -164,24 +186,67 @@
                                             <li th:if="${currentPage < totalPage}" class="paginate_button" id="example2_next"
                                                 th:classappend="${currentPage == totalPage ? 'disabled' : ''}">
                                                 <!--                                                <a th:href="@{'?pageNo=' + ${currentPage + 1} + '&roleName=' + ${roleName}}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>-->
-                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${currentPage + 1} + '&roleName=' + ${roleName}}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>
+                                                <a th:href="@{${keyword != null && keyword != '' ? ('?keyword=' + keyword + '&') : '?'} + 'pageNo=' + ${currentPage + 1} + '&courseId=' + ${course.id}}" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a>
                                             </li>
 
                                         </ul>
                                     </div>
                                 </div>
+
                             </div>
+
                         </div>
+                        <!-- End pagination -->
+
                     </div>
+                    <!-- End box body of body -->
 
                 </div>
+                <!-- End box body - wrapper -->
+
+                <!-- box footer -->
+                <div class="box-footer">
+                    <div class="box">
+                        <a th:href="@{/admin/course/lectureOfCourse(courseId=${course.id})}" class="control-label">Back to Lecture of Course</a>
+                    </div>
+                </div>
+                <!-- End box footer -->
+
             </div>
+            <!-- End box body -->
+
         </div>
-        <!-- /.box -->
+        <!-- End Default box -->
 
     </section>
-    <!-- /.content -->
+    <!-- End Main content -->
 
 </div>
+
+<div layout:fragment="js">
+    <script type="text/javascript">
+
+        $('#checkAll').click(function () {
+            $('input[type=checkbox]').not(this).prop('checked', this.checked);
+        });
+
+        $('#btnAdd').click(function(event){
+            // Prevent default action of this submit
+            event.preventDefault();
+
+            // Get value of selected checkbox
+            var ids = $('tbody input[type=checkbox]:checked').map(function () {
+                return $(this).val();
+            }).get();
+
+            // convert to JSON String
+            $('#ids').val(JSON.stringify(ids));
+
+            $('#formAddSelected').submit();
+        });
+
+    </script>
+</div>
+
 </body>
 </html>
