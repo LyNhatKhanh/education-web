@@ -31,7 +31,7 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public Lecture findById(int theId) {
-        return lectureRepository.findById(theId).orElseThrow(() -> new RuntimeException("Course id not found - " + theId));
+        return lectureRepository.findById(theId).orElseThrow(() -> new RuntimeException("Lecture id not found - " + theId));
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.lynhatkhanh.educationweb.educationweb.controller.admin;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lynhatkhanh.educationweb.educationweb.model.Course;
 import com.lynhatkhanh.educationweb.educationweb.model.CourseUser;
 import com.lynhatkhanh.educationweb.educationweb.model.Lecture;
@@ -11,11 +14,13 @@ import com.lynhatkhanh.educationweb.educationweb.utils.MessageUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Controller
@@ -204,6 +209,67 @@ public class CourseController {
         model.addAttribute("lectures", lecturePages);
 
         return "admin/list/lecture-add-list";
+    }
+
+    @PostMapping("/lectureOfCourse/listAdd/process")
+    public String processAddLecturesToCourse(@RequestParam("courseId") int courseId, @RequestParam("ids") String ids,
+                                             @RequestParam("type") String type) throws JsonProcessingException {
+
+        Course course = courseService.findById(courseId);
+        String typeMessage = null;
+        String viewReturn = null;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        // objectMapper.readValue: Convert JSON String to object of Java
+        // TypeReference: handle complex datatype or Generic
+        List<Integer> idList = objectMapper.readValue(ids, new TypeReference<>() {});
+
+        if (type.equals("lecture")) {
+            viewReturn = "redirect:/admin/course/lectureOfCourse/listAdd?courseId=" + courseId;
+            if (!idList.isEmpty()) {
+                for (int i = 0; i < idList.size(); i++) {
+                    Lecture lecture = lectureService.findById(idList.get(i));
+                    lecture.setCourseId(course);
+                    lectureService.save(lecture);
+                }
+                typeMessage = "insert_success";
+            } else
+                typeMessage = "insert_error";
+        } else if (type.equals("user")) {
+            viewReturn = "redirect:/admin/course/studentOfCourse/listAdd?courseId=" + courseId;
+            if (!idList.isEmpty()) {
+                for (int i = 0; i < idList.size(); i++) {
+                    UserAccount userAccount = userAccountService.findById(idList.get(i));
+                    userAccount.getEnrolledCourses().add(new CourseUser(course, userAccount));
+                    userAccountService.save(userAccount);
+                }
+            } else
+                typeMessage = "insert_error";
+        }
+        return viewReturn + "&message=" + typeMessage;
+
+       /* if (!idList.isEmpty()) {
+            if (type.equals("lecture")) {
+                for (int i = 0; i < idList.size(); i++) {
+                    Lecture lecture = lectureService.findById(idList.get(i));
+                    lecture.setCourseId(course);
+                    lectureService.save(lecture);
+                }
+                viewReturn = "redirect:/admin/course/lectureOfCourse/listAdd?courseId=" + courseId;
+            }
+            else if (type.equals("user")) {
+                for (int i = 0; i < idList.size(); i++) {
+                    UserAccount userAccount = userAccountService.findById(idList.get(i));
+                    userAccount.getEnrolledCourses().add(new CourseUser(course, userAccount));
+                    userAccountService.save(userAccount);
+                }
+                viewReturn = "redirect:/admin/course/studentOfCourse/listAdd?courseId=" + courseId;
+            }
+            typeMessage = "insert_success";
+        } else {
+            typeMessage = "insert_error";
+        }*/
+
     }
 
     @GetMapping("/lectureOfCourse/listAdd/addLectureToCourse")

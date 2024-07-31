@@ -1,4 +1,4 @@
-package com.lynhatkhanh.educationweb.educationweb.controller;
+package com.lynhatkhanh.educationweb.educationweb.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;

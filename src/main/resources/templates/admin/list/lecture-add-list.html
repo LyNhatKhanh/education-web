@@ -78,8 +78,10 @@
                         </form>
 
                         <div class="box-tools pull-right" style="margin-top: 5px;">
-                            <form id="formAddSelected">
+                            <form id="formAddSelected" th:action="@{/admin/course/lectureOfCourse/listAdd/process}" method="post">
                                 <input type="hidden" id="ids" name="ids">
+                                <input type="hidden" name="courseId" th:value="${course.id}">
+                                <input type="hidden" name="type" th:value="'lecture'">
                                 <button type="submit" class="btn btn-block btn-success btn-sm" id="btnAdd">
                                     <i class="fa fa-plus-circle" style="margin-right: 5px;"></i>Add selected
                                 </button>
@@ -235,7 +237,7 @@
             event.preventDefault();
 
             // Get value of selected checkbox
-            var ids = $('tbody input[type=checkbox]:checked').map(function () {
+            let ids = $('tbody input[type=checkbox]:checked').map(function () {
                 return $(this).val();
             }).get();
 
