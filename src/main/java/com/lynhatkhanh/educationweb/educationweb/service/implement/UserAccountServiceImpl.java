@@ -151,6 +151,26 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    public Page<UserAccount> searchStudentWithoutCourse(String keyword, Integer pageNo) {
+        List<UserAccount> allStudents = userAccountRepository.searchStudentWithoutCourseByKeyword(keyword);
+        List<UserAccount> studentWithoutCourse = new ArrayList<>();
+
+        for (UserAccount student : allStudents) {
+            if (student.getUserRole().size() == 1)
+                studentWithoutCourse.add(student);
+        }
+
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+
+        Integer start = (int) pageable.getOffset();
+        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > studentWithoutCourse.size() ? studentWithoutCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
+
+        List<UserAccount> showList = studentWithoutCourse.subList(start, end);
+
+        return new PageImpl<>(showList, pageable, studentWithoutCourse.size());
+    }
+
+    @Override
     public Page<UserAccount> findAll(Integer pageNo) {
         Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
         return userAccountRepository.findAll(pageable);

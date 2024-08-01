@@ -21,4 +21,5 @@ public interface UserAccountService extends GenericService<UserAccount> {
 
     Page<UserAccount> findStudentWithoutCourse(Integer pageNo);
 
+    Page<UserAccount> searchStudentWithoutCourse(String keyword, Integer pageNo);
 }

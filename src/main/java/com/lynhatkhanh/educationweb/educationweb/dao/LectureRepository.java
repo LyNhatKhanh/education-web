@@ -26,4 +26,8 @@ public interface LectureRepository extends JpaRepository<Lecture, Integer> {
     @Query("SELECT l FROM Lecture AS l " +
             "WHERE l.courseId.id = :courseId AND l.title LIKE %:keyword%")
     List<Lecture> searchLecturesOfCourseByKeyword(@Param("keyword") String keyword, @Param("courseId") int courseId);
+
+    @Query("SELECT l FROM Lecture AS l " +
+            "WHERE l.courseId IS NULL AND l.title LIKE %:keyword%")
+    List<Lecture> searchLecturesWithoutCourseByKeyword(@Param("keyword") String keyword);
 }

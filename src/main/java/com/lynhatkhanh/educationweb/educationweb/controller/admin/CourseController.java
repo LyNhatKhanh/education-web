@@ -50,7 +50,7 @@ public class CourseController {
 
         if (keyword != null) {
             listCourse = courseService.searchByKeyword(keyword, pageNo);
-            model.addAttribute("keyword", keyword);
+//            model.addAttribute("keyword", keyword);
         }
 
         model.addAttribute("totalPage", listCourse.getTotalPages());
@@ -127,7 +127,7 @@ public class CourseController {
 
         if (keyword != null) {
             studentOfCoursePages = userAccountService.searchStudentsOfCourse(keyword, pageNo, courseId);
-            model.addAttribute("keyword", keyword);
+//            model.addAttribute("keyword", keyword);
         }
 
         Course course = courseService.findById(courseId);
@@ -143,12 +143,18 @@ public class CourseController {
 
     @GetMapping("/studentOfCourse/listAdd")
     public String listForAddStudent(Model model, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                                    @RequestParam("courseId") int courseId, @RequestParam(value = "message", required = false) String message) {
+                                    @RequestParam("courseId") int courseId, @RequestParam(value = "keyword", required = false) String keyword,
+                                    @RequestParam(value = "message", required = false) String message) {
 
         if (message != null)
             MessageUtil.showMessage(message, model);
 
         Page<UserAccount> studentPages = userAccountService.findStudentWithoutCourse(pageNo);
+
+        if (keyword != null) {
+            studentPages = userAccountService.searchStudentWithoutCourse(keyword, pageNo);
+//            model.addAttribute("keyword", keyword);
+        }
 
         Course course = courseService.findById(courseId);
         model.addAttribute("course", course);
@@ -187,7 +193,7 @@ public class CourseController {
 
         if (keyword != null) {
             lectureOfCoursePages = lectureService.searchLectureOfCourse(keyword, pageNo, courseId);
-            model.addAttribute("keyword", keyword);
+//            model.addAttribute("keyword", keyword);
         }
 
         Course course = courseService.findById(courseId);
@@ -203,12 +209,17 @@ public class CourseController {
 
     @GetMapping("/lectureOfCourse/listAdd")
     public String listForAddLecture(Model model, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                                    @RequestParam("courseId") int courseId, @RequestParam(value = "message", required = false) String message) {
+                                    @RequestParam("courseId") int courseId, @RequestParam(value = "keyword", required = false) String keyword,
+                                    @RequestParam(value = "message", required = false) String message) {
 
         if (message != null)
             MessageUtil.showMessage(message, model);
 
         Page<Lecture> lecturePages = lectureService.findLectureWithoutCourse(pageNo);
+
+        if(keyword != null) {
+            lecturePages = lectureService.searchLectureWithoutCourse(keyword, pageNo);
+        }
 
         Course course = courseService.findById(courseId);
         model.addAttribute("course", course);
@@ -221,7 +232,20 @@ public class CourseController {
         return "admin/list/lecture-add-list";
     }
 
-    @PostMapping("/lectureOfCourse/listAdd/process")
+    @GetMapping("/lectureOfCourse/listAdd/addLectureToCourse")
+    public String processAddLectureToCourse(@RequestParam("courseId") int courseId, @RequestParam("lectureId") int lectureId){
+
+        Lecture lecture = lectureService.findById(lectureId);
+        Course course = courseService.findById(courseId);
+
+        lecture.setCourseId(course);
+
+        lectureService.save(lecture);
+
+        return "redirect:/admin/course/lectureOfCourse/listAdd?courseId=" + courseId + "&message=insert_success";
+    }
+
+    @PostMapping("/Course/listAdd/process")
     public String processAddLecturesToCourse(@RequestParam("courseId") int courseId, @RequestParam("ids") String ids,
                                              @RequestParam("type") String type) throws JsonProcessingException {
 
@@ -253,46 +277,11 @@ public class CourseController {
                     userAccount.getEnrolledCourses().add(new CourseUser(course, userAccount));
                     userAccountService.save(userAccount);
                 }
+                typeMessage = "insert_success";
             } else
                 typeMessage = "insert_error";
         }
         return viewReturn + "&message=" + typeMessage;
-
-       /* if (!idList.isEmpty()) {
-            if (type.equals("lecture")) {
-                for (int i = 0; i < idList.size(); i++) {
-                    Lecture lecture = lectureService.findById(idList.get(i));
-                    lecture.setCourseId(course);
-                    lectureService.save(lecture);
-                }
-                viewReturn = "redirect:/admin/course/lectureOfCourse/listAdd?courseId=" + courseId;
-            }
-            else if (type.equals("user")) {
-                for (int i = 0; i < idList.size(); i++) {
-                    UserAccount userAccount = userAccountService.findById(idList.get(i));
-                    userAccount.getEnrolledCourses().add(new CourseUser(course, userAccount));
-                    userAccountService.save(userAccount);
-                }
-                viewReturn = "redirect:/admin/course/studentOfCourse/listAdd?courseId=" + courseId;
-            }
-            typeMessage = "insert_success";
-        } else {
-            typeMessage = "insert_error";
-        }*/
-
-    }
-
-    @GetMapping("/lectureOfCourse/listAdd/addLectureToCourse")
-    public String processAddLectureToCourse(@RequestParam("courseId") int courseId, @RequestParam("lectureId") int lectureId){
-
-        Lecture lecture = lectureService.findById(lectureId);
-        Course course = courseService.findById(courseId);
-
-        lecture.setCourseId(course);
-
-        lectureService.save(lecture);
-
-        return "redirect:/admin/course/lectureOfCourse/listAdd?courseId=" + courseId + "&message=insert_success";
     }
 
 

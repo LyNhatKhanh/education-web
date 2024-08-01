@@ -50,4 +50,8 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Integ
             "WHERE ur.role.id = 2 AND s.enrolledCourses IS EMPTY")
     List<UserAccount> findStudentWithoutCourse();
 
+    @Query("SELECT s FROM UserAccount AS s " +
+            "INNER JOIN UserRole AS ur ON s.id = ur.userAccount.id " +
+            "WHERE ur.role.id = 2 AND s.enrolledCourses IS EMPTY AND s.userName LIKE %:keyword%")
+    List<UserAccount> searchStudentWithoutCourseByKeyword(@Param("keyword") String keyword);
 }
