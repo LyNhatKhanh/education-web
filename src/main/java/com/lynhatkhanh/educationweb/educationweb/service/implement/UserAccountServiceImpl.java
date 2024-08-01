@@ -97,6 +97,20 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    public Page<UserAccount> searchUsersOfCourse(String keyword, Integer pageNo, int courseId) {
+        List<UserAccount> studentOfCourseWithKeyword = userAccountRepository.searchUserAccountOfCourse(keyword, courseId);
+
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+
+        Integer start = (int) pageable.getOffset();
+        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > studentOfCourseWithKeyword.size() ? studentOfCourseWithKeyword.size() : (pageable.getOffset() + pageable.getPageSize()));
+
+        List<UserAccount> showList = studentOfCourseWithKeyword.subList(start, end);
+
+        return new PageImpl<>(showList, pageable, studentOfCourseWithKeyword.size());
+    }
+
+    @Override
     @Transactional
     public void deleteById(int theId) {
         userAccountRepository.deleteById(theId);

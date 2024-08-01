@@ -119,16 +119,22 @@ public class CourseController {
     @GetMapping("/studentOfCourse")
     public String showStudentOfCourse(Model model, @RequestParam(value = "message", required = false) String message,
                                       @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-//                                      @RequestParam(value = "keyword", required = false) String keyword,
+                                      @RequestParam(value = "keyword", required = false) String keyword,
                                       @RequestParam(value = "courseId") int courseId) {
 
         if (message != null)
             MessageUtil.showMessage(message, model);
 
         Page<UserAccount> studentOfCoursePages = userAccountService.findStudentOfCourse(pageNo, courseId);
-        Course course = courseService.findById(courseId);
 
+        if (keyword != null) {
+            studentOfCoursePages = userAccountService.searchUsersOfCourse(keyword, pageNo, courseId);
+            model.addAttribute("keyword", keyword);
+        }
+
+        Course course = courseService.findById(courseId);
         model.addAttribute("course", course);
+
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("pageSize", studentOfCoursePages.getSize());
         model.addAttribute("totalPage", studentOfCoursePages.getTotalPages());
@@ -145,9 +151,10 @@ public class CourseController {
             MessageUtil.showMessage(message, model);
 
         Page<UserAccount> studentPages = userAccountService.findStudentWithoutCourse(pageNo);
-        Course course = courseService.findById(courseId);
 
+        Course course = courseService.findById(courseId);
         model.addAttribute("course", course);
+
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPage", studentPages.getTotalPages());
         model.addAttribute("pageSize", studentPages.getSize());
@@ -181,8 +188,8 @@ public class CourseController {
         Page<Lecture> lectureOfCoursePages = lectureService.findLectureOfCourse(pageNo, courseId);
 
         Course course = courseService.findById(courseId);
-
         model.addAttribute("course", course);
+
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("pageSize", lectureOfCoursePages.getSize());
         model.addAttribute("totalPage", lectureOfCoursePages.getTotalPages());
@@ -201,8 +208,8 @@ public class CourseController {
         Page<Lecture> lecturePages = lectureService.findLectureWithoutCourse(pageNo);
 
         Course course = courseService.findById(courseId);
-
         model.addAttribute("course", course);
+
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPage", lecturePages.getTotalPages());
         model.addAttribute("pageSize", lecturePages.getSize());
