@@ -33,7 +33,7 @@
                 <a flag="info"
                    class="dt-button buttons-colvis btn btn-white btn-primary btn-bold"
                    data-toggle="tooltip"
-                   title='Thêm bài viết' th:href="@{/admin/course/showFormForAdd}">
+                   title='Thêm bài viết' th:href="@{/admin/course/form}">
                     <span>
                         <i class="fa fa-plus-circle bigger-110 purple"></i>
                     </span>
@@ -67,6 +67,14 @@
                             </div>
                         </div>
                     </form>
+
+                    <!-- Alert Create new account success -->
+                    <div th:if="${param.message != null}" class="message">
+                        <div class="alert col-xs-offset-1 col-xs-10" th:classappend="${alert}" style="margin-left: 0px; padding: 15px;">
+                            <span th:text="${messageResponse}" style="font-weight: bold"></span>
+                        </div>
+                    </div>
+
                     <div class="box-body">
                         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
                             <div class="row">
@@ -85,12 +93,22 @@
                                                 style="text-align: center;">
                                                 Id
                                             </th>
-                                            <th class="sorting col-sm-8" tabindex="0" aria-controls="example2" rowspan="1"
+                                            <th class="sorting col-sm-5" tabindex="0" aria-controls="example2" rowspan="1"
                                                 colspan="1" aria-label="Browser: activate to sort column ascending"
                                                 style="text-align: center;">
                                                 Title
                                             </th>
-                                            <th class="sorting col-sm-3" tabindex="0" aria-controls="example2" rowspan="1"
+                                            <th class="sorting col-sm-2" tabindex="0" aria-controls="example2" rowspan="1"
+                                                colspan="1" aria-label="Browser: activate to sort column ascending"
+                                                style="text-align: center;">
+                                                Lectures
+                                            </th>
+                                            <th class="sorting col-sm-2" tabindex="0" aria-controls="example2" rowspan="1"
+                                                colspan="1" aria-label="Browser: activate to sort column ascending"
+                                                style="text-align: center;">
+                                                Students
+                                            </th>
+                                            <th class="sorting col-sm-2" tabindex="0" aria-controls="example2" rowspan="1"
                                                 colspan="1" aria-label="Browser: activate to sort column ascending"
                                                 style="text-align: center;">
                                                 Action
@@ -98,11 +116,17 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr role="row" th:each="tempCourse : ${courses}" class="d-flex">
-                                            <td th:text="${tempCourse.id}" class="col-sm-1" style="text-align: center;"></td>
-                                            <td th:text="${tempCourse.title}" class="col-sm-8" style="padding-left: 30px;"></td>
-                                            <td class="col-sm-3" style="text-align: center;">
-                                                <a th:href="@{/admin/course/showFormForUpdate(courseId=${tempCourse.id})}" class="btn btn-info btn-sm">Update</a>
+                                        <tr role="row" th:each="tempCourse, iter : ${courses}" class="d-flex">
+                                            <td th:text="${iter.count + (currentPage * pageSize) - pageSize}" class="col-sm-1" style="text-align: center;"></td>
+                                            <td th:text="${tempCourse.title}" class="col-sm-5" style="padding-left: 30px;"></td>
+                                            <td class="col-sm-2" style="text-align: center;">
+                                                <a th:href="@{/admin/course/lectureOfCourse(courseId=${tempCourse.id})}" class="btn btn-info btn-sm">View</a>
+                                            </td>
+                                            <td class="col-sm-2" style="text-align: center;">
+                                                <a th:href="@{/admin/course/studentOfCourse(courseId=${tempCourse.id})}" class="btn btn-info btn-sm">View</a>
+                                            </td>
+                                            <td class="col-sm-2" style="text-align: center;">
+                                                <a th:href="@{/admin/course/form(courseId=${tempCourse.id})}" class="btn btn-primary btn-sm">Update</a>
                                                 <a th:href="@{/admin/course/deleteCourse(courseId=${tempCourse.id})}"
                                                    class="btn btn-danger btn-sm"
                                                    onclick="if (!(confirm('Are you sure you want to delete this course?'))) return false">Delete</a>

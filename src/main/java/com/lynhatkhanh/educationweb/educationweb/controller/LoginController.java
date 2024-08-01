@@ -1,7 +1,10 @@
 package com.lynhatkhanh.educationweb.educationweb.controller;
 
 import com.lynhatkhanh.educationweb.educationweb.exception.DuplicateUsernameException;
+import com.lynhatkhanh.educationweb.educationweb.model.Role;
 import com.lynhatkhanh.educationweb.educationweb.model.UserAccount;
+import com.lynhatkhanh.educationweb.educationweb.model.UserRole;
+import com.lynhatkhanh.educationweb.educationweb.service.RoleService;
 import com.lynhatkhanh.educationweb.educationweb.service.UserAccountService;
 import com.lynhatkhanh.educationweb.educationweb.utils.MessageUtil;
 import jakarta.validation.Valid;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @Controller
@@ -21,19 +25,17 @@ import java.util.List;
 public class LoginController {
 
     private UserAccountService userAccountService;
+
+    private RoleService roleService;
+
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public LoginController(UserAccountService userAccountService, PasswordEncoder passwordEncoder) {
+    public LoginController(UserAccountService userAccountService, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.userAccountService = userAccountService;
         this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
     }
-
-    //    @GetMapping("/showMyLoginPage")
-//    @ResponseBody
-//    public String showMyLoginPage() {
-//        return "/login/index";
-//    }
 
     @GetMapping("/showMyLoginPage")
     public String showMyLoginPageWithMessage(@RequestParam(value = "message", required = false) String message, Model model) {
@@ -56,7 +58,7 @@ public class LoginController {
         List<String> genderOption = Arrays.asList("Male", "Female", "Another");
         theModel.addAttribute("genderOption", genderOption);
 
-        return "login/register1";
+        return "login/register";
     }
 
     @PostMapping("/processSignUp")
@@ -68,10 +70,16 @@ public class LoginController {
         if (theBindingResult.hasErrors()) {
             List<String> genderOption = Arrays.asList("Male", "Female", "Another");
             theModel.addAttribute("genderOption", genderOption);
-            return "login/register1";
+            return "login/register";
         } else {
             String pw = newUser.getPassword();
             newUser.setPassword(passwordEncoder.encode(pw));
+            newUser.setEnabled(true);
+
+            // set role Student (auto set while create user)
+            // => handle login error (JOIN FETCH at UserAccountRepository.findUserAccountAndRoleByUserName(userName))
+            newUser.setUserRole(new HashSet<>());
+            newUser.getUserRole().add(new UserRole(roleService.findById(2), newUser));
 
             newUser.setCreatedDate(new Timestamp(System.currentTimeMillis()));
             try {
@@ -82,7 +90,7 @@ public class LoginController {
 
                 List<String> genderOption = Arrays.asList("Male", "Female", "Another");
                 theModel.addAttribute("genderOption", genderOption);
-                return "login/register1";
+                return "login/register";
             }
 
 

@@ -17,6 +17,7 @@ public class Role {
     private String name;
 
     @OneToMany(
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "role")
     private Set<UserRole> roleUser;

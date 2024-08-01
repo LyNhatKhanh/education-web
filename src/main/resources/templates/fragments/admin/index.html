@@ -15,6 +15,8 @@
     <link rel="stylesheet" th:href="@{/assets/admin/css/style.css}"/>
     <script th:src="@{/assets/admin/js/angular.min.js}"></script>
     <script th:src="@{/assets/admin/js/app.js}"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <header class="main-header" th:fragment="page-header">
@@ -187,35 +189,8 @@
 
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
-
-            <!--<li>
-              &lt;!&ndash; TODO: set href &ndash;&gt;
-              <a th:href="@{#}">
-                <i class="fa fa-th"></i> <span>Quản lý Menu </span>
-                <span class="pull-right-container">
-                    <small class="label pull-right bg-green">FE</small>
-                  </span>
-              </a>
-            </li>
-
-            <li class="treeview">
-              &lt;!&ndash; TODO: set href &ndash;&gt;
-              <a th:href="@{#}">
-                <i class="fa fa-dashboard"></i> <span>Quản lý banner</span>
-                <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </span>
-              </a>
-              <ul class="treeview-menu">
-                &lt;!&ndash; TODO: set href &ndash;&gt;
-                <li><a th:href="@{#}"><i class="fa fa-circle-o"></i> Edit </a></li>
-                <li><a th:href="@{#}"><i class="fa fa-circle-o"></i> banner </a></li>
-              </ul>
-            </li>-->
-
             <!-- Dashboard -->
             <li>
-                <!-- TODO: set href -->
                 <a th:href="@{/admin/dashboard}">
                     <i class="fa fa-th"></i> <span>Dashboard</span>
                 </a>
@@ -223,7 +198,6 @@
 
             <!-- Management -->
             <li class="treeview">
-                <!-- TODO: set href -->
                 <a th:href="@{#}">
                     <i class="fa fa-dashboard"></i> <span>Management</span>
                     <span class="pull-right-container">
@@ -231,7 +205,6 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <!-- TODO: set href -->
                     <li class="treeview">
                         <a th:href="@{#}"><i class="fa fa-circle-o"></i>Manage Course - Lecture
                             <span class="pull-right-container">
@@ -240,7 +213,7 @@
                         </a>
                         <ul class="treeview-menu">
                             <li><a th:href="@{/admin/course}"><i class="fa fa-circle-o"></i>Course</a></li>
-                            <li><a th:href="@{#}"><i class="fa fa-circle-o"></i>Lecture</a></li>
+                            <li><a th:href="@{/admin/lecture}"><i class="fa fa-circle-o"></i>Lecture</a></li>
                         </ul>
                     </li>
                     <li class="treeview">

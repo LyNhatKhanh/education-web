@@ -7,6 +7,7 @@
 <body>
 <h3>Access Denied - You are not authorized to access this resource.</h3>
 <hr>
-<a th:href="@{/index}">Back to home page</a>
+<a th:href="@{/index}" th:if="${!#authorization.expression('hasRole(''INSTRUCTOR'')')}">Back to Home page</a>
+<a th:href="@{/admin}" th:if="${#authorization.expression('hasRole(''INSTRUCTOR'')')}">Back to Admin page</a>
 </body>
 </html>

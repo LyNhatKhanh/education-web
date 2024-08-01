@@ -42,16 +42,16 @@
             </div>
 
             <!-- box body -->
-            <div class="box-body" style="min-height: 620px; font-size: 16px">
+            <div class="box-body" style=" font-size: 16px">
                 <div class="box">
                     <!-- form for POST method-->
-                    <form th:action="@{/admin/user/save}" th:object="${userAccount}" method="post">
-                        <input type="hidden" th:field="*{id}">
+                    <form th:action="@{/admin/user/save}" th:object="${userAccount}" method="post" id="formSubmit">
+                        <input type="hidden" th:field="*{id}" id="id" name="id">
                         <div class="form-group" style="margin-top: 40px; height: 30px">
                             <label class="col-sm-2 control-label no-padding-right">First Name</label>
                             <div class="form-control-error">
                                 <input type="text" class="col-sm-12" th:field="*{firstName}"
-                                       placeholder="Enter First Name">
+                                       placeholder="Enter First Name" id="firstName" name="firstName">
                                 <!-- add error message (if presence) -->
                                 <p th:if="${#fields.hasErrors('firstName')}"
                                    th:errors="*{firstName}" class="error-message"></p>
@@ -60,7 +60,9 @@
                         <div class="form-group" style="margin-top: 40px; height: 30px">
                             <label class="col-sm-2 control-label no-padding-right">Last Name</label>
                             <div class="form-control-error">
-                                <input type="text" class="col-sm-12" th:field="*{lastName}" placeholder="Enter Last Name">
+                                <input type="text" class="col-sm-12" th:field="*{lastName}"
+                                       placeholder="Enter Last Name"
+                                       id="lastName" name="lastName">
                                 <!-- add error message (if presence) -->
                                 <p th:if="${#fields.hasErrors('lastName')}"
                                    th:errors="*{lastName}" class="error-message"></p>
@@ -71,7 +73,7 @@
                             <label class="col-sm-2 control-label no-padding-right">Username</label>
                             <div class="form-control-error">
                                 <input type="text" class="col-sm-12" th:field="*{userName}" placeholder="Enter Username"
-                                       th:attr="disabled=${userAccount.id != 0} ? 'disabled' : null">
+                                       th:attr="disabled=${userAccount.id != 0} ? 'disabled' : null" id="userName" name="userName">
                                 <!-- add error message (if presence) -->
                                 <p th:if="${#fields.hasErrors('userName')}"
                                    th:errors="*{userName}" class="error-message"></p>
@@ -81,7 +83,8 @@
                         <div class="form-group" style="margin-top: 40px; height: 30px" th:if="${userAccount.id==0}">
                             <label class="col-sm-2 control-label no-padding-right">Password</label>
                             <div class="form-control-error">
-                                <input type="password" class="col-sm-12" th:field="*{password}" placeholder="Enter Password">
+                                <input type="password" class="col-sm-12" th:field="*{password}" placeholder="Enter Password"
+                                       id="password" name="password">
                                 <!-- add error message (if presence) -->
                                 <p th:if="${#fields.hasErrors('password')}"
                                    th:errors="*{password}" class="error-message"></p>
@@ -90,7 +93,7 @@
                         <div class="form-group" style="margin-top: 40px; height: 30px">
                             <label class="col-sm-2 control-label no-padding-right">Email</label>
                             <div class="form-control-error">
-                                <input type="email" class="col-sm-12" th:field="*{email}" placeholder="Enter Email">
+                                <input type="email" class="col-sm-12" th:field="*{email}" placeholder="Enter Email" id="email" name="email">
                                 <!-- add error message (if presence) -->
                                 <p th:if="${#fields.hasErrors('email')}"
                                    th:errors="*{email}" class="error-message"></p>
@@ -100,7 +103,7 @@
                             <label class="col-sm-2 control-label no-padding-right">Telephone</label>
                             <div class="form-control-error">
                                 <input type="tel" class="col-sm-12" th:field="*{telephone}" placeholder="Enter Telephone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                                        required id="phone">
+                                        required id="telephone" name="telephone">
                                 <!-- add error message (if presence) -->
                                 <p th:if="${#fields.hasErrors('telephone')}"
                                    th:errors="*{telephone}" class="error-message"></p>
@@ -110,7 +113,7 @@
 
                             <label class="col-sm-2 control-label no-padding-right">Address</label>
                             <div class="form-control-error">
-                                <input type="text" class="col-sm-12" th:field="*{address}" placeholder="Enter Address">
+                                <input type="text" class="col-sm-12" th:field="*{address}" placeholder="Enter Address" id="address" name="address">
                                 <!-- add error message (if presence) -->
                                 <p th:if="${#fields.hasErrors('address')}"
                                    th:errors="*{address}" class="error-message"></p>
@@ -177,10 +180,11 @@
                             </span>
                         </div>
                         <br>
-                        <br>
                         <hr>
-
-                        <input type="submit" value="Save" class="btn btn-info col-2" style="margin-left: 15px;"> <br>
+                        <input th:if="*{id==0}" type="submit" value="Save" class="btn btn-info col-2" style="margin-left: 15px;" id="btnAddOrUpdate">
+                        <input th:if="*{id!=0}" type="submit" value="Update" class="btn btn-info col-2" style="margin-left: 15px;" id="btnAddOrUpdate">
+                        <br>
+                        <br>
                     </form>
                 </div>
             </div>
@@ -188,7 +192,7 @@
             <!-- box footer -->
             <div class="box-footer">
                 <div class="box">
-                    <a th:href="@{/admin/course}" class="control-label">Back to Course List</a>
+                    <a th:href="@{/admin/user}" class="control-label">Back to User List</a>
                 </div>
             </div>
         </div>
@@ -200,7 +204,7 @@
     <script>
 
         // customize the notice that appears when the input doesn't match the specified pattern
-        const phoneInput = document.getElementById('phone');
+        const phoneInput = document.getElementById('telephone');
         phoneInput.oninvalid = function (event) {
             event.target.setCustomValidity('Please enter the phone number in the format 091-234-5678');
         };
@@ -208,6 +212,38 @@
         phoneInput.oninput = function (event) {
             event.target.setCustomValidity('');
         };
+
+        /*let userAPI = '[[@{/api/users}]]';
+        function addUser(data) {
+            $.ajax({
+                url: userAPI,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (result) {
+                    console.log(result);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+        }
+
+        $('#btnAddOrUpdate').click(function (e) {
+            e.preventDefault(); // prevent default behavior of element HTML (a - href)
+
+            let data = {};
+            let formData = $('#formSubmit').serializeArray();
+            $.each(formData, function (i,field) {
+                // i is the index of the current item in the formData array
+                // field is the current item in the formData array, which is an object with 'name' and 'value' properties
+                data[field.name] = field.value;
+            });
+            let id = $('#id').val();
+            if (id==0)
+                addUser(data);
+        })*/
 
     </script>
 

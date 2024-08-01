@@ -1,7 +1,12 @@
 package com.lynhatkhanh.educationweb.educationweb.service.implement;
 
+import com.lynhatkhanh.educationweb.educationweb.constant.SystemConstant;
 import com.lynhatkhanh.educationweb.educationweb.dao.CourseRepository;
+import com.lynhatkhanh.educationweb.educationweb.dao.UserAccountRepository;
+import com.lynhatkhanh.educationweb.educationweb.exception.ResourceNotFoundException;
 import com.lynhatkhanh.educationweb.educationweb.model.Course;
+import com.lynhatkhanh.educationweb.educationweb.model.CourseUser;
+import com.lynhatkhanh.educationweb.educationweb.model.UserAccount;
 import com.lynhatkhanh.educationweb.educationweb.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,13 +24,16 @@ public class CourseServiceImpl implements CourseService {
 
     private CourseRepository courseRepository;
 
+    private UserAccountRepository userAccountRepository;
+
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, UserAccountRepository userAccountRepository) {
         this.courseRepository = courseRepository;
+        this.userAccountRepository = userAccountRepository;
     }
 
-
     @Override
+    @Transactional
     public Course save(Course theCourse) {
         return courseRepository.save(theCourse);
     }
@@ -49,27 +57,28 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public void deleteById(int theId) {
         courseRepository.deleteById(theId);
     }
 
     @Override
-    public Page<Course> getAll(Integer pageNo) {
-        Pageable pageable = PageRequest.of(pageNo-1,2);
+    public Page<Course> findAll(Integer pageNo) {
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
 
         return courseRepository.findAll(pageable);
     }
 
     @Override
-    public List<Course> searchCourse(String keyword) {
+    public List<Course> searchByKeyword(String keyword) {
         return courseRepository.searchCourse(keyword);
     }
 
     @Override
-    public Page<Course> searchCourse(String keyword, Integer pageNo) {
+    public Page<Course> searchByKeyword(String keyword, Integer pageNo) {
         List<Course> listCourse = courseRepository.searchCourse(keyword);
 
-        Pageable pageable = PageRequest.of(pageNo-1,2);
+        Pageable pageable = PageRequest.of(pageNo-1,SystemConstant.PAGE_SIZE);
 
         // Offset: start at [x] index to the end (of list)
         // limit: after list return, take [x] results of this list
@@ -79,6 +88,23 @@ public class CourseServiceImpl implements CourseService {
 
         listCourse = listCourse.subList(start, end);
 
-        return new PageImpl<Course>(listCourse, pageable, courseRepository.searchCourse(keyword).size());
+        return new PageImpl<>(listCourse, pageable, courseRepository.searchCourse(keyword).size());
     }
+
+    /*@Override
+    public void addUserToCourse(int userId, int courseId) {
+        UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("UserAccount not found!"));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found!"));
+
+        if (userAccount.getUserRole().stream().noneMatch(userRole -> !userRole.getRole().getName().equals("ROLE_STUDENT"))) {
+            course.getCourseStudents().add(new CourseUser(course, userAccount));
+            userAccount.getEnrolledCourses().add(new CourseUser(course, userAccount));
+        } else if (userAccount.getUserRole().stream().noneMatch(userRole -> !userRole.getRole().getName().equals("ROLE_INSTRUCTOR"))) {
+            course.setInstructor(userAccount);
+            userAccount.getTaughtCourses().add(course);
+        }
+
+        courseRepository.save(course);
+        userAccountRepository.save(userAccount);
+    }*/
 }

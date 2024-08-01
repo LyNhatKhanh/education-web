@@ -30,12 +30,12 @@ tinymce.init({
     force_p_newlines : false,
     forced_root_block : '',
     filemanager_title:"Quản lý ảnh",	
-    external_filemanager_path: base_url()+"/file/",
+    /*external_filemanager_path: base_url()+"/file/",
     external_plugins: { 
         "filemanager" : base_url()+"/file/plugin.min.js",
         codemirror: base_url()+'/public/backend/tinymce/plugins/codemirror/plugin.js'
     },
-    filemanager_access_key:akey(),
+    filemanager_access_key:akey(),*/
     codemirror: {
         indentOnInit: true,
         path: 'codemirror-4.8',
@@ -81,15 +81,15 @@ tinymce.init({
     relative_urls: false,
     remove_script_host : false,
 		filemanager_title:"Quản lý ảnh",	
-	external_filemanager_path: base_url()+"/file/",
+	/*external_filemanager_path: base_url()+"/file/",
 	external_plugins: { "filemanager" : base_url()+"/file/plugin.min.js"},
-	filemanager_access_key:akey(),
+	filemanager_access_key:akey(),*/
 
 });
 var thumb = $(".thumb");
 var remove = $(".remove-thumb");
 
-var mo_img = base_url()+'/public/images/no-ig.png';
+// var mo_img = base_url()+'/public/images/no-ig.png';
 if (typeof old_img != 'undefined')
 {
 	mo_img = old_img !='' ? old_img : mo_img;

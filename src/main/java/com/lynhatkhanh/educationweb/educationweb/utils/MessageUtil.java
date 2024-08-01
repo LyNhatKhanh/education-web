@@ -15,6 +15,9 @@ public class MessageUtil {
             if (message.equals("insert_success")) {
                 messageResponse = "Insert success";
                 alert = "alert-success";
+            } else if (message.equals("insert_error")) {
+                messageResponse = "Can not insert!";
+                alert = "alert-danger";
             } else if (message.equals("update_success")) {
                 messageResponse = "Update success";
                 alert = "alert-success";

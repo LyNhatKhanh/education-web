@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import javax.sql.DataSource;
 
@@ -37,19 +38,19 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity.userDetailsService(customUserDetailService)
+                .csrf().disable()
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/*").permitAll()
-                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/admin/**").hasAnyRole("INSTRUCTOR", "ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .formLogin(login ->
                         login
                                 .loginPage("/showMyLoginPage")
                                 .loginProcessingUrl("/authenticateTheUser")
-//                                .usernameParameter("username")
-//                                .passwordParameter("password")
-//                                .defaultSuccessUrl("/admin", true)
                                 .permitAll()
                 )
                 .logout(logout ->
@@ -57,10 +58,15 @@ public class SecurityConfiguration {
                                 .permitAll())
                 .exceptionHandling(handle ->
                         handle
-                                .accessDeniedPage("/access-denied")
+//                                .accessDeniedPage("/access-denied")
+                                .accessDeniedHandler(customAccessDeniedHandler())
                 );
 
         return httpSecurity.build();
+    }
+
+    private AccessDeniedHandler customAccessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
     }
 
     /*asking Spring Security to ignore DispatcherServletDelegating [ant = Ant [pattern='/static/**']*/

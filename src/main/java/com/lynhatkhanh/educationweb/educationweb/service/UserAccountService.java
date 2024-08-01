@@ -5,19 +5,18 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public interface UserAccountService {
+public interface UserAccountService extends GenericService<UserAccount> {
 
-    UserAccount findByUserName(String userName);
+    UserAccount findUserAndUserRoleByUsername(String userName);
 
-    List<UserAccount> findAll();
+    Page<UserAccount> findUsersOfRole(Integer pageNo, int roleId);
 
-    UserAccount findById(int userId);
-
-    void save(UserAccount userAccount);
-
-    Page<UserAccount> getUsersOfRole(Integer pageNo, int roleId);
+    List<UserAccount> findUsersOfRole(int roleId);
 
     Page<UserAccount> searchUsersOfRole(String keyword, Integer pageNo, int roleId);
 
-    void deleteById(int theId);
+    Page<UserAccount> findStudentOfCourse(Integer pageNo, int courseId);
+
+    Page<UserAccount> findStudentWithoutCourse(Integer pageNo);
+
 }
