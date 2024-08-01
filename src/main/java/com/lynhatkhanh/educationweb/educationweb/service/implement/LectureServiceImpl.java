@@ -100,4 +100,18 @@ public class LectureServiceImpl implements LectureService {
 
         return new PageImpl<>(showList, pageable, lectureWithoutCourse.size());
     }
+
+    @Override
+    public Page<Lecture> searchLectureOfCourse(String keyword, Integer pageNo, int courseId) {
+        List<Lecture> lectureOfCouseWithKeyword = lectureRepository.searchLecturesOfCourseByKeyword(keyword, courseId);
+
+        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+
+        Integer start = (int) pageable.getOffset();
+        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > lectureOfCouseWithKeyword.size() ? lectureOfCouseWithKeyword.size() : (pageable.getOffset() + pageable.getPageSize()));
+
+        List<Lecture> showList = lectureOfCouseWithKeyword.subList(start, end);
+
+        return new PageImpl<>(showList, pageable, lectureOfCouseWithKeyword.size());
+    }
 }

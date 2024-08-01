@@ -14,13 +14,16 @@ import java.util.List;
 @Repository
 public interface LectureRepository extends JpaRepository<Lecture, Integer> {
 
-    @Query("SELECT l FROM Lecture l WHERE l.title LIKE %?1%")
+    @Query("SELECT l FROM Lecture AS l WHERE l.title LIKE %?1%")
     List<Lecture> searchLecturesByKeyword(String keyword);
 
-    @Query("SELECT l FROM Lecture l WHERE l.courseId.id = :courseId")
+    @Query("SELECT l FROM Lecture AS l WHERE l.courseId.id = :courseId")
     List<Lecture> findLectureOfCourse(@Param("courseId") int courseId);
 
-    @Query("SELECT l FROM Lecture l WHERE l.courseId IS NULL")
+    @Query("SELECT l FROM Lecture AS l WHERE l.courseId IS NULL")
     List<Lecture> findLectureWithoutCourse();
 
+    @Query("SELECT l FROM Lecture AS l " +
+            "WHERE l.courseId.id = :courseId AND l.title LIKE %:keyword%")
+    List<Lecture> searchLecturesOfCourseByKeyword(@Param("keyword") String keyword, @Param("courseId") int courseId);
 }

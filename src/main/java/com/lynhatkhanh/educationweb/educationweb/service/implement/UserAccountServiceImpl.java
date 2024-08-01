@@ -97,7 +97,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public Page<UserAccount> searchUsersOfCourse(String keyword, Integer pageNo, int courseId) {
+    public Page<UserAccount> searchStudentsOfCourse(String keyword, Integer pageNo, int courseId) {
         List<UserAccount> studentOfCourseWithKeyword = userAccountRepository.searchUserAccountOfCourse(keyword, courseId);
 
         Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);

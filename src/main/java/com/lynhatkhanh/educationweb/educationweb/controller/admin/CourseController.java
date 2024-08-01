@@ -14,13 +14,11 @@ import com.lynhatkhanh.educationweb.educationweb.utils.MessageUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 @Controller
@@ -128,7 +126,7 @@ public class CourseController {
         Page<UserAccount> studentOfCoursePages = userAccountService.findStudentOfCourse(pageNo, courseId);
 
         if (keyword != null) {
-            studentOfCoursePages = userAccountService.searchUsersOfCourse(keyword, pageNo, courseId);
+            studentOfCoursePages = userAccountService.searchStudentsOfCourse(keyword, pageNo, courseId);
             model.addAttribute("keyword", keyword);
         }
 
@@ -179,13 +177,18 @@ public class CourseController {
     @GetMapping("/lectureOfCourse")
     public String showLectureOfCourse(Model model, @RequestParam(value = "message", required = false) String message,
                                       @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-//                                      @RequestParam(value = "keyword", required = false) String keyword,
+                                      @RequestParam(value = "keyword", required = false) String keyword,
                                       @RequestParam(value = "courseId") int courseId) {
 
         if (message != null)
             MessageUtil.showMessage(message, model);
 
         Page<Lecture> lectureOfCoursePages = lectureService.findLectureOfCourse(pageNo, courseId);
+
+        if (keyword != null) {
+            lectureOfCoursePages = lectureService.searchLectureOfCourse(keyword, pageNo, courseId);
+            model.addAttribute("keyword", keyword);
+        }
 
         Course course = courseService.findById(courseId);
         model.addAttribute("course", course);

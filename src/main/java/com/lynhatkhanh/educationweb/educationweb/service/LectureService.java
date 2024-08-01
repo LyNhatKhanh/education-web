@@ -9,4 +9,5 @@ public interface LectureService extends GenericService<Lecture> {
 
     Page<Lecture> findLectureWithoutCourse(Integer pageNo);
 
+    Page<Lecture> searchLectureOfCourse(String keyword, Integer pageNo, int courseId);
 }
