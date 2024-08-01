@@ -67,6 +67,7 @@
                         <form>
                             <div class="input-group input-group-sm" style="width: 150px;">
                                 <!-- input -->
+                                <input type="hidden" name="courseId" th:value="${course.id}">
                                 <input type="text" name="keyword" class="form-control pull-right" placeholder="Search">
 
                                 <!-- button submit -->
@@ -78,7 +79,7 @@
                         </form>
 
                         <div class="box-tools pull-right" style="margin-top: 5px;">
-                            <form id="formAddSelected" th:action="@{/admin/course/lectureOfCourse/listAdd/process}" method="post">
+                            <form id="formAddSelected" th:action="@{/admin/course/Course/listAdd/process}" method="post">
                                 <input type="hidden" id="ids" name="ids">
                                 <input type="hidden" name="courseId" th:value="${course.id}">
                                 <input type="hidden" name="type" th:value="'lecture'">

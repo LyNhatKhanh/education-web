@@ -1,6 +1,7 @@
 package com.lynhatkhanh.educationweb.educationweb.dao;
 
 import com.lynhatkhanh.educationweb.educationweb.model.UserAccount;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -39,9 +40,18 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Integ
             "WHERE cs.course.id = :courseId")
     List<UserAccount> findUserAccountOfCourse(@Param("courseId") int courseId);
 
+    @Query("SELECT u FROM UserAccount AS u " +
+            "INNER JOIN CourseUser AS cs ON u.id = cs.userAccount.id " +
+            "WHERE cs.course.id = :courseId AND u.userName LIKE %:keyword%")
+    List<UserAccount> searchUserAccountOfCourse(@Param("keyword") String keyword, @Param("courseId") int courseId);
+
     @Query("SELECT s FROM UserAccount AS s " +
             "INNER JOIN UserRole AS ur ON s.id = ur.userAccount.id " +
             "WHERE ur.role.id = 2 AND s.enrolledCourses IS EMPTY")
     List<UserAccount> findStudentWithoutCourse();
 
+    @Query("SELECT s FROM UserAccount AS s " +
+            "INNER JOIN UserRole AS ur ON s.id = ur.userAccount.id " +
+            "WHERE ur.role.id = 2 AND s.enrolledCourses IS EMPTY AND s.userName LIKE %:keyword%")
+    List<UserAccount> searchStudentWithoutCourseByKeyword(@Param("keyword") String keyword);
 }

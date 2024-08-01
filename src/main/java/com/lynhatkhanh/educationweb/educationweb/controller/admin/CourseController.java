@@ -14,13 +14,11 @@ import com.lynhatkhanh.educationweb.educationweb.utils.MessageUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 @Controller
@@ -52,7 +50,7 @@ public class CourseController {
 
         if (keyword != null) {
             listCourse = courseService.searchByKeyword(keyword, pageNo);
-            model.addAttribute("keyword", keyword);
+//            model.addAttribute("keyword", keyword);
         }
 
         model.addAttribute("totalPage", listCourse.getTotalPages());
@@ -119,16 +117,22 @@ public class CourseController {
     @GetMapping("/studentOfCourse")
     public String showStudentOfCourse(Model model, @RequestParam(value = "message", required = false) String message,
                                       @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-//                                      @RequestParam(value = "keyword", required = false) String keyword,
+                                      @RequestParam(value = "keyword", required = false) String keyword,
                                       @RequestParam(value = "courseId") int courseId) {
 
         if (message != null)
             MessageUtil.showMessage(message, model);
 
         Page<UserAccount> studentOfCoursePages = userAccountService.findStudentOfCourse(pageNo, courseId);
-        Course course = courseService.findById(courseId);
 
+        if (keyword != null) {
+            studentOfCoursePages = userAccountService.searchStudentsOfCourse(keyword, pageNo, courseId);
+//            model.addAttribute("keyword", keyword);
+        }
+
+        Course course = courseService.findById(courseId);
         model.addAttribute("course", course);
+
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("pageSize", studentOfCoursePages.getSize());
         model.addAttribute("totalPage", studentOfCoursePages.getTotalPages());
@@ -139,15 +143,22 @@ public class CourseController {
 
     @GetMapping("/studentOfCourse/listAdd")
     public String listForAddStudent(Model model, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                                    @RequestParam("courseId") int courseId, @RequestParam(value = "message", required = false) String message) {
+                                    @RequestParam("courseId") int courseId, @RequestParam(value = "keyword", required = false) String keyword,
+                                    @RequestParam(value = "message", required = false) String message) {
 
         if (message != null)
             MessageUtil.showMessage(message, model);
 
         Page<UserAccount> studentPages = userAccountService.findStudentWithoutCourse(pageNo);
-        Course course = courseService.findById(courseId);
 
+        if (keyword != null) {
+            studentPages = userAccountService.searchStudentWithoutCourse(keyword, pageNo);
+//            model.addAttribute("keyword", keyword);
+        }
+
+        Course course = courseService.findById(courseId);
         model.addAttribute("course", course);
+
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPage", studentPages.getTotalPages());
         model.addAttribute("pageSize", studentPages.getSize());
@@ -172,7 +183,7 @@ public class CourseController {
     @GetMapping("/lectureOfCourse")
     public String showLectureOfCourse(Model model, @RequestParam(value = "message", required = false) String message,
                                       @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-//                                      @RequestParam(value = "keyword", required = false) String keyword,
+                                      @RequestParam(value = "keyword", required = false) String keyword,
                                       @RequestParam(value = "courseId") int courseId) {
 
         if (message != null)
@@ -180,9 +191,14 @@ public class CourseController {
 
         Page<Lecture> lectureOfCoursePages = lectureService.findLectureOfCourse(pageNo, courseId);
 
-        Course course = courseService.findById(courseId);
+        if (keyword != null) {
+            lectureOfCoursePages = lectureService.searchLectureOfCourse(keyword, pageNo, courseId);
+//            model.addAttribute("keyword", keyword);
+        }
 
+        Course course = courseService.findById(courseId);
         model.addAttribute("course", course);
+
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("pageSize", lectureOfCoursePages.getSize());
         model.addAttribute("totalPage", lectureOfCoursePages.getTotalPages());
@@ -193,16 +209,21 @@ public class CourseController {
 
     @GetMapping("/lectureOfCourse/listAdd")
     public String listForAddLecture(Model model, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                                    @RequestParam("courseId") int courseId, @RequestParam(value = "message", required = false) String message) {
+                                    @RequestParam("courseId") int courseId, @RequestParam(value = "keyword", required = false) String keyword,
+                                    @RequestParam(value = "message", required = false) String message) {
 
         if (message != null)
             MessageUtil.showMessage(message, model);
 
         Page<Lecture> lecturePages = lectureService.findLectureWithoutCourse(pageNo);
 
-        Course course = courseService.findById(courseId);
+        if(keyword != null) {
+            lecturePages = lectureService.searchLectureWithoutCourse(keyword, pageNo);
+        }
 
+        Course course = courseService.findById(courseId);
         model.addAttribute("course", course);
+
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPage", lecturePages.getTotalPages());
         model.addAttribute("pageSize", lecturePages.getSize());
@@ -211,7 +232,20 @@ public class CourseController {
         return "admin/list/lecture-add-list";
     }
 
-    @PostMapping("/lectureOfCourse/listAdd/process")
+    @GetMapping("/lectureOfCourse/listAdd/addLectureToCourse")
+    public String processAddLectureToCourse(@RequestParam("courseId") int courseId, @RequestParam("lectureId") int lectureId){
+
+        Lecture lecture = lectureService.findById(lectureId);
+        Course course = courseService.findById(courseId);
+
+        lecture.setCourseId(course);
+
+        lectureService.save(lecture);
+
+        return "redirect:/admin/course/lectureOfCourse/listAdd?courseId=" + courseId + "&message=insert_success";
+    }
+
+    @PostMapping("/Course/listAdd/process")
     public String processAddLecturesToCourse(@RequestParam("courseId") int courseId, @RequestParam("ids") String ids,
                                              @RequestParam("type") String type) throws JsonProcessingException {
 
@@ -243,46 +277,11 @@ public class CourseController {
                     userAccount.getEnrolledCourses().add(new CourseUser(course, userAccount));
                     userAccountService.save(userAccount);
                 }
+                typeMessage = "insert_success";
             } else
                 typeMessage = "insert_error";
         }
         return viewReturn + "&message=" + typeMessage;
-
-       /* if (!idList.isEmpty()) {
-            if (type.equals("lecture")) {
-                for (int i = 0; i < idList.size(); i++) {
-                    Lecture lecture = lectureService.findById(idList.get(i));
-                    lecture.setCourseId(course);
-                    lectureService.save(lecture);
-                }
-                viewReturn = "redirect:/admin/course/lectureOfCourse/listAdd?courseId=" + courseId;
-            }
-            else if (type.equals("user")) {
-                for (int i = 0; i < idList.size(); i++) {
-                    UserAccount userAccount = userAccountService.findById(idList.get(i));
-                    userAccount.getEnrolledCourses().add(new CourseUser(course, userAccount));
-                    userAccountService.save(userAccount);
-                }
-                viewReturn = "redirect:/admin/course/studentOfCourse/listAdd?courseId=" + courseId;
-            }
-            typeMessage = "insert_success";
-        } else {
-            typeMessage = "insert_error";
-        }*/
-
-    }
-
-    @GetMapping("/lectureOfCourse/listAdd/addLectureToCourse")
-    public String processAddLectureToCourse(@RequestParam("courseId") int courseId, @RequestParam("lectureId") int lectureId){
-
-        Lecture lecture = lectureService.findById(lectureId);
-        Course course = courseService.findById(courseId);
-
-        lecture.setCourseId(course);
-
-        lectureService.save(lecture);
-
-        return "redirect:/admin/course/lectureOfCourse/listAdd?courseId=" + courseId + "&message=insert_success";
     }
 
 
