@@ -4,6 +4,7 @@ import com.lynhatkhanh.educationweb.educationweb.constant.SystemConstant;
 import com.lynhatkhanh.educationweb.educationweb.dao.LectureRepository;
 import com.lynhatkhanh.educationweb.educationweb.model.Lecture;
 import com.lynhatkhanh.educationweb.educationweb.service.LectureService;
+import com.lynhatkhanh.educationweb.educationweb.utils.PageableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -57,14 +58,9 @@ public class LectureServiceImpl implements LectureService {
     public Page<Lecture> searchByKeyword(String keyword, Integer pageNo) {
 
         List<Lecture> lectures = lectureRepository.searchLecturesByKeyword(keyword);
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
-
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > lectures.size() ? lectures.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<Lecture> showList = lectures.subList(start, end);
-
-        return new PageImpl<>(showList, pageable, lectures.size());
+        PageableUtil<Lecture> pageableUtil = new PageableUtil<>(lectures, pageNo);
+        List<Lecture> showList = pageableUtil.getShowList();
+        return new PageImpl<>(showList, pageableUtil.getPageable(), lectures.size());
     }
 
     @Override
@@ -77,55 +73,39 @@ public class LectureServiceImpl implements LectureService {
     public Page<Lecture> findLectureOfCourse(Integer pageNo, int courseId) {
         List<Lecture> lectureOfCourse = lectureRepository.findLectureOfCourse(courseId);
 
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        PageableUtil<Lecture> pageableUtil = new PageableUtil<>(lectureOfCourse, pageNo);
+        List<Lecture> showList = pageableUtil.getShowList();
 
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > lectureOfCourse.size() ? lectureOfCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<Lecture> showList = lectureOfCourse.subList(start, end);
-
-        return new PageImpl<>(showList, pageable, lectureOfCourse.size());
+        return new PageImpl<>(showList, pageableUtil.getPageable(), lectureOfCourse.size());
     }
 
     @Override
     public Page<Lecture> findLectureWithoutCourse(Integer pageNo) {
         List<Lecture> lectureWithoutCourse = lectureRepository.findLectureWithoutCourse();
 
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        PageableUtil<Lecture> pageableUtil = new PageableUtil<>(lectureWithoutCourse, pageNo);
+        List<Lecture> showList = pageableUtil.getShowList();
 
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > lectureWithoutCourse.size() ? lectureWithoutCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<Lecture> showList = lectureWithoutCourse.subList(start, end);
-
-        return new PageImpl<>(showList, pageable, lectureWithoutCourse.size());
+        return new PageImpl<>(showList, pageableUtil.getPageable(), lectureWithoutCourse.size());
     }
 
     @Override
     public Page<Lecture> searchLectureOfCourse(String keyword, Integer pageNo, int courseId) {
         List<Lecture> lectureOfCouseWithKeyword = lectureRepository.searchLecturesOfCourseByKeyword(keyword, courseId);
 
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        PageableUtil<Lecture> pageableUtil = new PageableUtil<>(lectureOfCouseWithKeyword, pageNo);
+        List<Lecture> showList = pageableUtil.getShowList();
 
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > lectureOfCouseWithKeyword.size() ? lectureOfCouseWithKeyword.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<Lecture> showList = lectureOfCouseWithKeyword.subList(start, end);
-
-        return new PageImpl<>(showList, pageable, lectureOfCouseWithKeyword.size());
+        return new PageImpl<>(showList, pageableUtil.getPageable(), lectureOfCouseWithKeyword.size());
     }
 
     @Override
     public Page<Lecture> searchLectureWithoutCourse(String keyword, Integer pageNo) {
         List<Lecture> lectureWithoutCourseWithKeyword = lectureRepository.searchLecturesWithoutCourseByKeyword(keyword);
 
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        PageableUtil<Lecture> pageableUtil = new PageableUtil<>(lectureWithoutCourseWithKeyword, pageNo);
+        List<Lecture> showList = pageableUtil.getShowList();
 
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > lectureWithoutCourseWithKeyword.size() ? lectureWithoutCourseWithKeyword.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<Lecture> showList = lectureWithoutCourseWithKeyword.subList(start, end);
-
-        return new PageImpl<>(showList, pageable, lectureWithoutCourseWithKeyword.size());
+        return new PageImpl<>(showList, pageableUtil.getPageable(), lectureWithoutCourseWithKeyword.size());
     }
 }

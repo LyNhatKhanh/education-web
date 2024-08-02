@@ -45,7 +45,7 @@ public class UserAccountController {
     @GetMapping("")
     public String showUsers(Model model, @RequestParam(value = "message", required = false) String message,
                             @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-                            @RequestParam(value = "keyword") String keyword, @RequestParam(value = "roleName", required = false) String roleName) {
+                            @RequestParam(value = "keyword", required = false) String keyword, @RequestParam(value = "roleName", required = false) String roleName) {
 
         if (message != null)
             MessageUtil.showMessage(message, model);
