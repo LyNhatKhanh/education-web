@@ -5,6 +5,7 @@ import com.lynhatkhanh.educationweb.educationweb.dao.UserAccountRepository;
 import com.lynhatkhanh.educationweb.educationweb.exception.DuplicateUsernameException;
 import com.lynhatkhanh.educationweb.educationweb.model.UserAccount;
 import com.lynhatkhanh.educationweb.educationweb.service.UserAccountService;
+import com.lynhatkhanh.educationweb.educationweb.utils.PageableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -55,18 +56,16 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public Page<UserAccount> findUsersOfRole(Integer pageNo, int roleId) {
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
         if (roleId == 0) {
+            Pageable pageable = PageRequest.of(pageNo - 1, SystemConstant.PAGE_SIZE);
             return userAccountRepository.findAll(pageable);
         } else {
             List<UserAccount> studentList = userAccountRepository.findUserAccountOfRole(roleId);
 
-            Integer start = (int) pageable.getOffset();
-            Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > studentList.size() ? studentList.size() : (pageable.getOffset() + pageable.getPageSize()));
+            PageableUtil<UserAccount> pageableUtil = new PageableUtil<>(studentList, pageNo);
+            List<UserAccount> showList = pageableUtil.getShowList();
 
-            List<UserAccount> showList = studentList.subList(start, end);
-
-            return new PageImpl<>(showList, pageable, studentList.size());
+            return new PageImpl<>(showList, pageableUtil.getPageable(), studentList.size());
         }
     }
 
@@ -83,31 +82,20 @@ public class UserAccountServiceImpl implements UserAccountService {
         else
             userList = userAccountRepository.searchUserAccountOfRole(keyword, roleId);
 
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        PageableUtil<UserAccount> pageableUtil = new PageableUtil<>(userList, pageNo);
+        List<UserAccount> showList = pageableUtil.getShowList();
 
-        // offset: start at [x] index of Page list (item instance) - like PageNo [offset = pageNo * pageSize]
-        // limit: after return list, take [x] results of list - like PageSize
-
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > userList.size() ? userList.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<UserAccount> showList = userList.subList(start, end);
-
-        return new PageImpl<>(showList, pageable, userList.size());
+        return new PageImpl<>(showList, pageableUtil.getPageable(), userList.size());
     }
 
     @Override
     public Page<UserAccount> searchStudentsOfCourse(String keyword, Integer pageNo, int courseId) {
         List<UserAccount> studentOfCourseWithKeyword = userAccountRepository.searchUserAccountOfCourse(keyword, courseId);
 
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        PageableUtil<UserAccount> pageableUtil = new PageableUtil<>(studentOfCourseWithKeyword, pageNo);
+        List<UserAccount> showList = pageableUtil.getShowList();
 
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > studentOfCourseWithKeyword.size() ? studentOfCourseWithKeyword.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<UserAccount> showList = studentOfCourseWithKeyword.subList(start, end);
-
-        return new PageImpl<>(showList, pageable, studentOfCourseWithKeyword.size());
+        return new PageImpl<>(showList, pageableUtil.getPageable(), studentOfCourseWithKeyword.size());
     }
 
     @Override
@@ -120,14 +108,10 @@ public class UserAccountServiceImpl implements UserAccountService {
     public Page<UserAccount> findStudentOfCourse(Integer pageNo, int courseId) {
         List<UserAccount> studentOfCourse = userAccountRepository.findUserAccountOfCourse(courseId);
 
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        PageableUtil<UserAccount> pageableUtil = new PageableUtil<>(studentOfCourse, pageNo);
+        List<UserAccount> showList = pageableUtil.getShowList();
 
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > studentOfCourse.size() ? studentOfCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<UserAccount> showList = studentOfCourse.subList(start, end);
-
-        return new PageImpl<>(showList, pageable, studentOfCourse.size());
+        return new PageImpl<>(showList, pageableUtil.getPageable(), studentOfCourse.size());
     }
 
     @Override
@@ -140,14 +124,10 @@ public class UserAccountServiceImpl implements UserAccountService {
                 studentWithoutCourse.add(student);
         }
 
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        PageableUtil<UserAccount> pageableUtil = new PageableUtil<>(studentWithoutCourse, pageNo);
+        List<UserAccount> showList = pageableUtil.getShowList();
 
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > studentWithoutCourse.size() ? studentWithoutCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<UserAccount> showList = studentWithoutCourse.subList(start, end);
-
-        return new PageImpl<>(showList, pageable, studentWithoutCourse.size());
+        return new PageImpl<>(showList, pageableUtil.getPageable(), studentWithoutCourse.size());
     }
 
     @Override
@@ -160,19 +140,15 @@ public class UserAccountServiceImpl implements UserAccountService {
                 studentWithoutCourse.add(student);
         }
 
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        PageableUtil<UserAccount> pageableUtil = new PageableUtil<>(studentWithoutCourse, pageNo);
+        List<UserAccount> showList = pageableUtil.getShowList();
 
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > studentWithoutCourse.size() ? studentWithoutCourse.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<UserAccount> showList = studentWithoutCourse.subList(start, end);
-
-        return new PageImpl<>(showList, pageable, studentWithoutCourse.size());
+        return new PageImpl<>(showList, pageableUtil.getPageable(), studentWithoutCourse.size());
     }
 
     @Override
     public Page<UserAccount> findAll(Integer pageNo) {
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        Pageable pageable = PageRequest.of(pageNo - 1, SystemConstant.PAGE_SIZE);
         return userAccountRepository.findAll(pageable);
     }
 
@@ -185,13 +161,9 @@ public class UserAccountServiceImpl implements UserAccountService {
     public Page<UserAccount> searchByKeyword(String keyword, Integer pageNo) {
         List<UserAccount> userAccounts = userAccountRepository.searchUserAccount(keyword);
 
-        Pageable pageable = PageRequest.of(pageNo-1, SystemConstant.PAGE_SIZE);
+        PageableUtil<UserAccount> pageableUtil = new PageableUtil<>(userAccounts, pageNo);
+        List<UserAccount> showList = pageableUtil.getShowList();
 
-        Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > userAccounts.size() ? userAccounts.size() : (pageable.getOffset() + pageable.getPageSize()));
-
-        List<UserAccount> showList = userAccounts.subList(start,end);
-
-        return new PageImpl<>(showList, pageable, userAccounts.size());
+        return new PageImpl<>(showList, pageableUtil.getPageable(), userAccounts.size());
     }
 }

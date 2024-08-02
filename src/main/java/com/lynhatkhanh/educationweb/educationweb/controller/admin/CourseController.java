@@ -50,7 +50,7 @@ public class CourseController {
 
         if (keyword != null) {
             listCourse = courseService.searchByKeyword(keyword, pageNo);
-//            model.addAttribute("keyword", keyword);
+            model.addAttribute("keyword", keyword);
         }
 
         model.addAttribute("totalPage", listCourse.getTotalPages());
@@ -127,7 +127,7 @@ public class CourseController {
 
         if (keyword != null) {
             studentOfCoursePages = userAccountService.searchStudentsOfCourse(keyword, pageNo, courseId);
-//            model.addAttribute("keyword", keyword);
+            model.addAttribute("keyword", keyword);
         }
 
         Course course = courseService.findById(courseId);
@@ -153,7 +153,7 @@ public class CourseController {
 
         if (keyword != null) {
             studentPages = userAccountService.searchStudentWithoutCourse(keyword, pageNo);
-//            model.addAttribute("keyword", keyword);
+            model.addAttribute("keyword", keyword);
         }
 
         Course course = courseService.findById(courseId);
@@ -193,7 +193,7 @@ public class CourseController {
 
         if (keyword != null) {
             lectureOfCoursePages = lectureService.searchLectureOfCourse(keyword, pageNo, courseId);
-//            model.addAttribute("keyword", keyword);
+            model.addAttribute("keyword", keyword);
         }
 
         Course course = courseService.findById(courseId);
