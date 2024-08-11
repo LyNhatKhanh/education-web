@@ -42,7 +42,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/*").permitAll()
-                                .requestMatchers("/api/*").permitAll()
+                                .requestMatchers("/api/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/admin/**").hasAnyRole("INSTRUCTOR", "ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
