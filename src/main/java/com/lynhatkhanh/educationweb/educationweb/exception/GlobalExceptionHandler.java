@@ -1,35 +1,37 @@
 package com.lynhatkhanh.educationweb.educationweb.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
+import com.lynhatkhanh.educationweb.educationweb.dto.response.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ModelAndView handleAllExceptions(Exception ex) {
-        ModelAndView model = new ModelAndView();
-        model.addObject("error", ex.getMessage());
-        model.setViewName("error");
-        return model;
+    @ExceptionHandler(value = Exception.class)
+    ResponseEntity<ApiResponse> handlingException(RuntimeException exception) {
+        log.info("Exception: " + exception);
+
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(ErrorCode.UNCATEGORIZED_ERROR.getCode());
+        apiResponse.setMessage(ErrorCode.UNAUTHENTICATED.getMessage());
+
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    public ModelAndView handleNullPointerException(NullPointerException ex) {
-        ModelAndView modelAndView = new ModelAndView("errorPage");
-        modelAndView.addObject("errorMessage", "A null pointer exception occured: " + ex.getMessage());
-        return modelAndView;
+    @ExceptionHandler(value = AppException.class)
+    ResponseEntity<ApiResponse> handlingAppException(AppException exception) {
+        log.info("Exception: " + exception);
+        ErrorCode errorCode = exception.getErrorCode();
+
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+
+        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }
 
-    @ModelAttribute
-    public void addAttributes(Model model) {
-        model.addAttribute("msg", "Additional Information");
-    }
 
 }
