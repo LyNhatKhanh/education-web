@@ -95,6 +95,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         String token = generateToken(user);
 
         return AuthenticationResponse.builder()
+                .isAuthenticated(true)
                 .token(token)
                 .build();
     }
