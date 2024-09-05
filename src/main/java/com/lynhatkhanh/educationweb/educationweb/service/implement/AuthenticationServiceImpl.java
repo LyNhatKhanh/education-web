@@ -192,7 +192,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
             invalidedTokenRepository.save(invalidedToken);
         } catch (AppException ex) {
-            log.info("Token has already expired!");
+            throw new AppException(ErrorCode.TOKEN_EXPIRED);
         }
     }
 }

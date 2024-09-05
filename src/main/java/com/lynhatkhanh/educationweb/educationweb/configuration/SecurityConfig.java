@@ -23,7 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
     private static final String[] PUBLIC_ENDPOINT = {
-            "/api/auth/token", "/api/users"
+            "/api/auth/**", "/api/users"
     };
 
     @NonFinal

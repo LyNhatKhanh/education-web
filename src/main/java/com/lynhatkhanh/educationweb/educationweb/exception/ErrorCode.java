@@ -12,6 +12,7 @@ public enum ErrorCode {
 
 
     UNAUTHENTICATED(2001, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
+    TOKEN_EXPIRED(2002, "Token has already expired!", HttpStatus.UNAUTHORIZED),
 
     ;
 
