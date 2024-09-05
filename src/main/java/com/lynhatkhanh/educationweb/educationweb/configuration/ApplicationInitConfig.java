@@ -40,11 +40,11 @@ public class ApplicationInitConfig {
     ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
         log.info("Initializing application.....");
         return args -> {
-            if (userRepository.existsByUsername(ADMIN_USER_NAME)) {
-                if (!roleRepository.existsById(PredefinedRole.USER_ROLE)) {
+            if (userRepository.findByUsername(ADMIN_USER_NAME).isEmpty()) {
+                if (roleRepository.findById(PredefinedRole.USER_ROLE).isEmpty()) {
                     roleRepository.save(Role.builder()
                             .name(PredefinedRole.USER_ROLE)
-                            .description("User role!")
+                            .description("User role")
                             .build());
                 }
 
