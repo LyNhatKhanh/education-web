@@ -52,9 +52,11 @@ public class UserServiceImpl implements IUserService {
 
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        HashSet<Role> roles = new HashSet<>();
-        roleRepository.findAllById(request.getRoles()).forEach(role -> roles.add(role));
-        user.setRoles(roles);
+        if (request.getRoles() != null) {
+            HashSet<Role> roles = new HashSet<>();
+            roleRepository.findAllById(request.getRoles()).forEach(role -> roles.add(role));
+            user.setRoles(roles);
+        }
 
         /*TODO: set BaseEntity*/
 
@@ -82,6 +84,11 @@ public class UserServiceImpl implements IUserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         userMapper.updateUser(user, request);
+        if (request.getRoles() != null) {
+            HashSet<Role> roles = new HashSet<>();
+            roleRepository.findAllById(request.getRoles()).forEach(role -> roles.add(role));
+            user.setRoles(roles);
+        }
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }

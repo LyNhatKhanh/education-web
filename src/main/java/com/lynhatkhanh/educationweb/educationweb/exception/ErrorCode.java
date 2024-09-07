@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatusCode;
 
 @Getter
 public enum ErrorCode {
-    UNCATEGORIZED_ERROR(9999, "Uncategoried!", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNCATEGORIZED_ERROR(9999, "Uncategorized error!", HttpStatus.INTERNAL_SERVER_ERROR),
     USER_NOT_EXISTED(1001, "User is not Existed!", HttpStatus.BAD_REQUEST),
     USER_EXISTED(1002, "User is Existed!", HttpStatus.BAD_REQUEST),
 

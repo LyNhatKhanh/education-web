@@ -13,12 +13,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     ResponseEntity<ApiResponse> handlingException(RuntimeException exception) {
         log.info("Exception: " + exception);
-
+        ErrorCode errorCode = ErrorCode.UNCATEGORIZED_ERROR;
         ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setCode(ErrorCode.UNCATEGORIZED_ERROR.getCode());
-        apiResponse.setMessage(ErrorCode.UNAUTHENTICATED.getMessage());
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
 
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }
 
     @ExceptionHandler(value = AppException.class)
