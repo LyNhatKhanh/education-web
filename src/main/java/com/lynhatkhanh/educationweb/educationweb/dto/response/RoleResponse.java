@@ -1,19 +1,17 @@
-package com.lynhatkhanh.educationweb.educationweb.entity;
+package com.lynhatkhanh.educationweb.educationweb.dto.response;
 
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Entity
-@Table(name = "permission")
+import java.util.Set;
+
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Permission {
-
-    @Id
+public class RoleResponse {
     String name;
     String description;
+    Set<PermissionResponse> permissions;
 }

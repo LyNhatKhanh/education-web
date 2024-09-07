@@ -95,8 +95,6 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void deleteUser(String userId) {
-        User user = userRepository.findById(userId)
-                        .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         userRepository.deleteById(userId);
     }
 }

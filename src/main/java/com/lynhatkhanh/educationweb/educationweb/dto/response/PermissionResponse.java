@@ -1,19 +1,14 @@
-package com.lynhatkhanh.educationweb.educationweb.entity;
+package com.lynhatkhanh.educationweb.educationweb.dto.response;
 
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Entity
-@Table(name = "permission")
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Permission {
-
-    @Id
+public class PermissionResponse {
     String name;
     String description;
 }

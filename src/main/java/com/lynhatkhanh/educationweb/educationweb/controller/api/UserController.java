@@ -4,11 +4,13 @@ import com.lynhatkhanh.educationweb.educationweb.dto.request.UserCreationRequest
 import com.lynhatkhanh.educationweb.educationweb.dto.request.UserUpdateRequest;
 import com.lynhatkhanh.educationweb.educationweb.dto.response.ApiResponse;
 import com.lynhatkhanh.educationweb.educationweb.dto.response.UserResponse;
-import com.lynhatkhanh.educationweb.educationweb.entity.User;
 import com.lynhatkhanh.educationweb.educationweb.service.IUserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +19,17 @@ import java.util.List;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserController {
 
     IUserService userService;
 
     @GetMapping("/myInfo")
     public ApiResponse<UserResponse> getMyInfo() {
+        Authentication context = SecurityContextHolder.getContext().getAuthentication();
+        log.info("username: " + context.getName());
+        context.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getMyInfo())
                 .build();

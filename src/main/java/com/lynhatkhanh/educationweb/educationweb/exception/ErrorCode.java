@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatusCode;
 public enum ErrorCode {
     UNCATEGORIZED_ERROR(9999, "Uncategorized error!", HttpStatus.INTERNAL_SERVER_ERROR),
     USER_NOT_EXISTED(1001, "User is not Existed!", HttpStatus.BAD_REQUEST),
+    PERMISSION_NOT_EXISTED(1001, "Permission is not Existed!", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_EXISTED(1001, "Role is not Existed!", HttpStatus.BAD_REQUEST),
     USER_EXISTED(1002, "User is Existed!", HttpStatus.BAD_REQUEST),
-
-
+    PERMISSION_EXISTED(1002, "Permission is Existed!", HttpStatus.BAD_REQUEST),
+    ROLE_EXISTED(1002, "Role is Existed!", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(2001, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
     TOKEN_EXPIRED(2002, "Token has already expired!", HttpStatus.UNAUTHORIZED),
 
