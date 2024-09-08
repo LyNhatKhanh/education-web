@@ -14,7 +14,8 @@ public enum ErrorCode {
     PERMISSION_EXISTED(1002, "Permission is Existed!", HttpStatus.BAD_REQUEST),
     ROLE_EXISTED(1002, "Role is Existed!", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(2001, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
-    TOKEN_EXPIRED(2002, "Token has already expired!", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(2002, "You do not have permission!", HttpStatus.FORBIDDEN),
+    TOKEN_EXPIRED(2003, "Token has already expired!", HttpStatus.UNAUTHORIZED),
 
     ;
 

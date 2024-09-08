@@ -59,9 +59,14 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public RoleResponse updateRole(String name, RoleRequest request) {
-        Role role = roleRepository.findById(name)
+        Role role = roleRepository.findById(name.toUpperCase())
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
         roleMapper.updateRole(role, request);
+        if (request.getPermissions() != null) {
+            Set<Permission> permissions = new HashSet<>();
+            permissionRepository.findAllById(request.getPermissions()).forEach(permissions::add);
+            role.setPermissions(permissions);
+        }
         roleRepository.save(role);
         return roleMapper.toRoleResponse(role);
     }

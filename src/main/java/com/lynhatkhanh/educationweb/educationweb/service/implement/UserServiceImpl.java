@@ -14,6 +14,10 @@ import com.lynhatkhanh.educationweb.educationweb.service.IUserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +30,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserServiceImpl implements IUserService {
 
     UserRepository userRepository;
@@ -54,7 +59,7 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         if (request.getRoles() != null) {
             HashSet<Role> roles = new HashSet<>();
-            roleRepository.findAllById(request.getRoles()).forEach(role -> roles.add(role));
+            roleRepository.findAllById(request.getRoles()).forEach(roles::add);
             user.setRoles(roles);
         }
 
@@ -66,6 +71,9 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public List<UserResponse> getUsers() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("User: " + authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info("Role: " + grantedAuthority.getAuthority()));
         List<User> users = userRepository.findAll();
         List<UserResponse> responses = new ArrayList<>();
         users.forEach(user -> responses.add(userMapper.toUserResponse(user)));
@@ -84,6 +92,7 @@ public class UserServiceImpl implements IUserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         if (request.getRoles() != null) {
             HashSet<Role> roles = new HashSet<>();
             roleRepository.findAllById(request.getRoles()).forEach(role -> roles.add(role));

@@ -40,31 +40,34 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
-                request
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("ROLE_ADMIN")
-                        .anyRequest().authenticated())
+                        request
+                                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("ROLE_ADMIN")
+                                .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable);
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer ->
-                        jwtConfigurer
-                                .decoder(jwtDecode())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                                jwtConfigurer
+                                        .decoder(jwtDecode())
+                                        // when decode jwt => auto bind scope claim to grantedAuthorities
+                                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        // while authenticate fail => access to this entryPoint
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
 
         return httpSecurity.build();
     }
 
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }
 
-    JwtDecoder jwtDecode () {
+    JwtDecoder jwtDecode() {
         SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
         return NimbusJwtDecoder
                 .withSecretKey(secretKeySpec)
