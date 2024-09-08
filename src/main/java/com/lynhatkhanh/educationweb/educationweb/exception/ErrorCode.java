@@ -17,6 +17,10 @@ public enum ErrorCode {
     UNAUTHORIZED(2002, "You do not have permission!", HttpStatus.FORBIDDEN),
     TOKEN_EXPIRED(2003, "Token has already expired!", HttpStatus.UNAUTHORIZED),
 
+    INVALID_KEY(3001, "Invalid message key!", HttpStatus.BAD_REQUEST),
+    INVALID_USERNAME(3002, "Username must be at least {min} characters!", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(3003, "Password must be at least {min} characters!", HttpStatus.BAD_REQUEST),
+    INVALID_DOB(3004, "Yours age must be at least {min}!", HttpStatus.BAD_REQUEST),
     ;
 
     private int code;

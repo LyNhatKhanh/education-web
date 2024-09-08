@@ -4,6 +4,7 @@ import com.lynhatkhanh.educationweb.educationweb.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -22,6 +23,7 @@ public class UserResponse {
     String gender;
     Boolean enabled;
     String email;
+    LocalDate dob;
     Set<RoleResponse> roles;
 
 }

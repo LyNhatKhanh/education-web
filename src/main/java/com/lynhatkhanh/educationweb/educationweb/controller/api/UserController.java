@@ -5,6 +5,7 @@ import com.lynhatkhanh.educationweb.educationweb.dto.request.UserUpdateRequest;
 import com.lynhatkhanh.educationweb.educationweb.dto.response.ApiResponse;
 import com.lynhatkhanh.educationweb.educationweb.dto.response.UserResponse;
 import com.lynhatkhanh.educationweb.educationweb.service.IUserService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -37,7 +38,7 @@ public class UserController {
 
 
     @PostMapping
-    public ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest request) {
+    public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))
                 .build();
