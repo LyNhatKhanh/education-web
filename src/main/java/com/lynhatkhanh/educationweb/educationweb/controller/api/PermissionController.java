@@ -4,7 +4,6 @@ import com.lynhatkhanh.educationweb.educationweb.dao.PermissionRepository;
 import com.lynhatkhanh.educationweb.educationweb.dto.request.PermissionRequest;
 import com.lynhatkhanh.educationweb.educationweb.dto.response.ApiResponse;
 import com.lynhatkhanh.educationweb.educationweb.dto.response.PermissionResponse;
-import com.lynhatkhanh.educationweb.educationweb.entity.Permission;
 import com.lynhatkhanh.educationweb.educationweb.service.IPermissionService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -53,10 +52,10 @@ public class PermissionController {
     }
 
     @DeleteMapping("/{name}")
-    public ApiResponse deletePermission(@PathVariable("name") String name) {
+    public ApiResponse<Void> deletePermission(@PathVariable("name") String name) {
         PermissionResponse permission = permissionService.getPermission(name);
         permissionService.deletePermission(name);
-        return ApiResponse.builder()
+        return ApiResponse.<Void>builder()
                 .message("Delete permission: " + permission.getName() + " complete!")
                 .build();
     }

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,5 +30,16 @@ public class User extends BaseEntity {
 
     @ManyToMany
     Set<Role> roles;
+
+    @OneToMany(mappedBy = "instructor")
+    List<Course> taughtCourses;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_courses", // Join table name
+            joinColumns = @JoinColumn(name = "user_id"), // Foreign key column in join table for this entity
+            inverseJoinColumns = @JoinColumn(name = "course_id") // Foreign key column in join table for the other entity
+    )
+    Set<Course> enrolledCourses;
 
 }

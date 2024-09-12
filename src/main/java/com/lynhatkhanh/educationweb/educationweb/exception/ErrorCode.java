@@ -7,20 +7,29 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 public enum ErrorCode {
     UNCATEGORIZED_ERROR(9999, "Uncategorized error!", HttpStatus.INTERNAL_SERVER_ERROR),
+
     USER_NOT_EXISTED(1001, "User is not Existed!", HttpStatus.BAD_REQUEST),
     PERMISSION_NOT_EXISTED(1001, "Permission is not Existed!", HttpStatus.BAD_REQUEST),
     ROLE_NOT_EXISTED(1001, "Role is not Existed!", HttpStatus.BAD_REQUEST),
+    COURSE_NOT_EXISTED(1001, "Course is not Existed!", HttpStatus.BAD_REQUEST),
+    LECTURE_NOT_EXISTED(1001, "Lecture is not Existed!", HttpStatus.BAD_REQUEST),
+
     USER_EXISTED(1002, "User is Existed!", HttpStatus.BAD_REQUEST),
     PERMISSION_EXISTED(1002, "Permission is Existed!", HttpStatus.BAD_REQUEST),
     ROLE_EXISTED(1002, "Role is Existed!", HttpStatus.BAD_REQUEST),
+    COURSE_EXISTED(1002, "Course is Existed!", HttpStatus.BAD_REQUEST),
+    LECTURE_EXISTED(1002, "Lecture is Existed!", HttpStatus.BAD_REQUEST),
+
     UNAUTHENTICATED(2001, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(2002, "You do not have permission!", HttpStatus.FORBIDDEN),
     TOKEN_EXPIRED(2003, "Token has already expired!", HttpStatus.UNAUTHORIZED),
+    USERNAME_PASSWORD_NOT_VALID(2004, "Username and Password are not valid!", HttpStatus.UNAUTHORIZED),
 
     INVALID_KEY(3001, "Invalid message key!", HttpStatus.BAD_REQUEST),
     INVALID_USERNAME(3002, "Username must be at least {min} characters!", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD(3003, "Password must be at least {min} characters!", HttpStatus.BAD_REQUEST),
     INVALID_DOB(3004, "Yours age must be at least {min}!", HttpStatus.BAD_REQUEST),
+
     ;
 
     private int code;

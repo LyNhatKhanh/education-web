@@ -58,7 +58,6 @@ public class UserController {
                 .build();
     }
 
-    /* TODO: fix Bug */
     @PutMapping("/{userId}")
     public ApiResponse<UserResponse> updateUser(@PathVariable("userId") String userId,
                                                 @RequestBody UserUpdateRequest request) {
@@ -68,12 +67,11 @@ public class UserController {
                 .build();
     }
 
-    /* TODO: fix Bug */
     @DeleteMapping("/{userId}")
-    public ApiResponse deleteUser(@PathVariable("userId") String userId) {
+    public ApiResponse<Void> deleteUser(@PathVariable("userId") String userId) {
         UserResponse user = userService.getUser(userId);
         userService.deleteUser(userId);
-        return ApiResponse.builder()
+        return ApiResponse.<Void>builder()
                 .message("Delete user: " + user.getUsername() + " complete!")
                 .build();
     }

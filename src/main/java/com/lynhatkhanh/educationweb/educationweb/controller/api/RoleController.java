@@ -50,10 +50,10 @@ public class RoleController {
     }
 
     @DeleteMapping("/{name}")
-    public ApiResponse deletePermission(@PathVariable("name") String name) {
+    public ApiResponse<Void> deletePermission(@PathVariable("name") String name) {
         RoleResponse role = roleService.getRole(name);
         roleService.deleteRole(name);
-        return ApiResponse.builder()
+        return ApiResponse.<Void>builder()
                 .message("Delete role: " + role.getName() + " complete!")
                 .build();
     }
