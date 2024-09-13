@@ -50,11 +50,12 @@ public class PermissionServiceImpl implements IPermissionService {
 
     @Override
     public PermissionResponse updatePermission(String name, PermissionRequest request) {
-        if (permissionRepository.existsByName(request.getName().toUpperCase()))
-            throw new AppException(ErrorCode.PERMISSION_EXISTED);
-
         Permission permission = permissionRepository.findById(name.toUpperCase())
                 .orElseThrow(() -> new AppException(ErrorCode.PERMISSION_NOT_EXISTED));
+
+        if (permissionRepository.existsByName(request.getName().toUpperCase())
+                && !permission.getName().equalsIgnoreCase(request.getName()))
+            throw new AppException(ErrorCode.PERMISSION_EXISTED);
         permissionMapper.updatePermission(permission, request);
         permissionRepository.save(permission);
         return permissionMapper.toPermissionResponse(permission);

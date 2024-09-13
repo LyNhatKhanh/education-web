@@ -16,6 +16,7 @@ import java.util.Set;
 public class Role {
 
     @Id
+    @Column(name = "name", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String name;
 
     String description;

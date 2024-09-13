@@ -34,14 +34,14 @@ public class RoleController {
     }
 
     @PostMapping
-    public ApiResponse<RoleResponse> createPermission(@RequestBody RoleRequest request) {
+    public ApiResponse<RoleResponse> createRole(@RequestBody RoleRequest request) {
         return ApiResponse.<RoleResponse>builder()
                 .result(roleService.createRole(request))
                 .build();
     }
 
     @PutMapping("/{name}")
-    public ApiResponse<RoleResponse> updatePermission(@PathVariable("name") String name,
+    public ApiResponse<RoleResponse> updateRole(@PathVariable("name") String name,
                                                             @RequestBody RoleRequest request) {
         return ApiResponse.<RoleResponse>builder()
                 .result(roleService.updateRole(name, request))
@@ -50,7 +50,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{name}")
-    public ApiResponse<Void> deletePermission(@PathVariable("name") String name) {
+    public ApiResponse<Void> deleteRole(@PathVariable("name") String name) {
         RoleResponse role = roleService.getRole(name);
         roleService.deleteRole(name);
         return ApiResponse.<Void>builder()

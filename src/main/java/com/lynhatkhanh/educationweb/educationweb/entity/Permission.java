@@ -14,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class Permission {
 
     @Id
+    @Column(name = "name", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String name;
     String description;
 }
