@@ -129,19 +129,19 @@
                 <li class="dropdown user user-menu">
                     <a th:href="@{#}" class="dropdown-toggle" data-toggle="dropdown">
                         <img th:src="@{/assets/admin/images/user2-160x160.jpg}" class="user-image" alt="User Image">
-                        <span class="hidden-xs" sec:authentication="principal.username"></span>
+<!--                        <span class="hidden-xs" sec:authentication="principal.username"></span>-->
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header" style="box-sizing: initial">
                             <img th:src="@{/assets/admin/images/user2-160x160.jpg}" class="img-circle" alt="User Image">
 
-                            <p>
-                                <span sec:authentication="principal.username"></span>
-                                <br>
-                                <span sec:authentication="principal.authorities"}></span>
-                                <small>Member since Nov. 2012</small>
-                            </p>
+<!--                            <p>-->
+<!--                                <span sec:authentication="principal.username"></span>-->
+<!--                                <br>-->
+<!--                                <span sec:authentication="principal.authorities"}></span>-->
+<!--                                <small>Member since Nov. 2012</small>-->
+<!--                            </p>-->
                         </li>
 
                         <li class="user-footer">
@@ -171,7 +171,7 @@
                 <img th:src="@{/assets/admin/images/user2-160x160.jpg}" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-                <p><span sec:authentication="principal.username"></span></p>
+<!--                <p><span sec:authentication="principal.username"></span></p>-->
                 <a th:href="@{#}"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
         </div>

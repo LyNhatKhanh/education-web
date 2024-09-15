@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="formLogin" class="login100-form validate-form">
+    <span class="login100-form-title">
+        Member Login
+    </span>
+
+    <!-- Place for messages: error, alert etc ... -->
+    <div class="form-group">
+        <div class="col-xs-15">
+            <div id="loginMessage"></div>
+        </div>
+    </div>
+
+    <!-- User name -->
+    <div class="wrap-input100 validate-input" data-validate="Username is required">
+        <input class="input100" type="text" id="username" name="username" placeholder="Type your username">
+        <span class="focus-input100"></span>
+        <span class="symbol-input100">
+            <i class="fa fa-envelope" aria-hidden="true"></i>
+        </span>
+    </div>
+
+    <!-- Password -->
+    <div class="wrap-input100 validate-input" data-validate="Password is required">
+        <input class="input100" type="password" id="password" name="password" placeholder="Password">
+        <span class="focus-input100"></span>
+        <span class="symbol-input100">
+            <i class="fa fa-lock" aria-hidden="true"></i>
+        </span>
+    </div>
+
+    <div class="container-login100-form-btn">
+        <button type="button" class="login100-form-btn" id="btnLogin">Login</button>
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Unified error handler function
+    function handleAjaxError(jqXHR) {
+        var errorResponse = JSON.parse(jqXHR.responseText);
+        var errorMessage = errorResponse.message || "An unexpected error occurred.";
+        $('#loginMessage').html('<div class="alert alert-danger">' + errorMessage + '</div>');
+    }
+
+    $(document).ready(function () {
+        $('#btnLogin').click(function (e) {
+            e.preventDefault();
+
+            var username = $('#username').val();
+            var password = $('#password').val();
+
+            // Send login request to the server
+            $.ajax({
+                url: '/educationweb/api/auth/token',  // Your authentication endpoint
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username,
+                    password: password
+                }),
+                success: function (response) {
+                    if (response.code === 0 && response.result.isAuthenticated) {
+                        // Extract the token from the response
+                        var token = response.result.token;
+
+                        // Store token in localStorage
+                        localStorage.setItem('jwtToken', token);
+
+                        // Now you can use the token for subsequent requests or redirects
+                        console.log("JWT Token:", token);
+
+                        // Redirect based on role or other logic (this will vary depending on your application)
+
+                        $.ajax({
+                            url: '/educationweb/api/users/myInfo',
+                            type: 'GET',
+                            contentType: 'application/json',
+                            headers: {
+                                'Authorization': 'Bearer ' + token
+                            },
+                            success: function (response) {
+                                var hasAdminRole = response.result.roles.some(role => role.name === 'ADMIN')
+                                if (hasAdminRole)
+                                    window.location.href = '/admin/index';
+                                else
+                                    window.location.href = '/home/index';
+                            },
+                            error: handleAjaxError
+                        })
+                    } else {
+                        $('#loginMessage').html('<div class="alert alert-danger">Login failed. Please check your credentials.</div>');
+                    }
+                },
+                error: handleAjaxError
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

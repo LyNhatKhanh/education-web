@@ -24,6 +24,7 @@ public enum ErrorCode {
     UNAUTHORIZED(2002, "You do not have permission!", HttpStatus.FORBIDDEN),
     TOKEN_EXPIRED(2003, "Token has already expired!", HttpStatus.UNAUTHORIZED),
     USERNAME_PASSWORD_NOT_VALID(2004, "Username and Password are not valid!", HttpStatus.UNAUTHORIZED),
+    VERIFY_TOKEN_FAIL(2005, "Verification failed: Unable to verify token.", HttpStatus.UNAUTHORIZED),
 
     INVALID_KEY(3001, "Invalid message key!", HttpStatus.BAD_REQUEST),
     INVALID_USERNAME(3002, "Username must be at least {min} characters!", HttpStatus.BAD_REQUEST),

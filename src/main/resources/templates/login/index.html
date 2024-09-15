@@ -1,131 +1,211 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Login</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
-	<link rel="icon" type="image/png" th:href="@{/assets/login/login/images/icons/favicon.ico}"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/vendor/bootstrap/css/bootstrap.min.css}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/vendor/animate/animate.css}">
-<!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/vendor/css-hamburgers/hamburgers.min.css}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/vendor/select2/select2.min.css}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/css/util.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/css/main.css}">
-<!--===============================================================================================-->
+    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" th:href="@{/assets/login/login/images/icons/favicon.ico}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/vendor/bootstrap/css/bootstrap.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          th:href="@{/assets/login/login/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/vendor/animate/animate.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/vendor/css-hamburgers/hamburgers.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/vendor/select2/select2.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/css/util.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/login/login/css/main.css}">
+    <!--===============================================================================================-->
 </head>
 <body>
-	
-	<div class="limiter">
-		<div class="container-login100">
-			<div class="wrap-login100">
-				<div class="login100-pic js-tilt" data-tilt>
-					<img th:src="@{/assets/login/login/images/img-01.png}" alt="IMG">
-				</div>
 
-				<form action="#" th:action="@{/authenticateTheUser}" th:method="post" class="login100-form validate-form">
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-pic js-tilt" data-tilt>
+                <img th:src="@{/assets/login/login/images/img-01.png}" alt="IMG">
+            </div>
+
+            <form id="formLogin" action="#" th:action="@{/authenticateTheUser}" th:method="post"
+                  class="login100-form validate-form">
 					<span class="login100-form-title">
 						Member Login
 					</span>
 
-					<!-- Place for messages: error, alert etc ... -->
-					<div class="form-group">
-						<div class="col-xs-15">
-							<div>
-								<!-- Check for login error -->
-								<div th:if="${param.error}">
-									<div class="alert alert-danger col-xs-offset-1 col-xs-10">
-										Invalid username and password.
-									</div>
-								</div>
-								<!-- Check for logged out -->
-								<div th:if="${param.logout}">
-									<div class="alert alert-success col-xs-offset-1 col-xs-10">
-										You have been logged out!
-									</div>
-								</div>
-								<!-- Alert Create new account success -->
-								<div th:if="${param.message != null}">
-									<div class="alert col-xs-offset-1 col-xs-10" th:classappend="${alert}" >
-										Create account success!
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+                <!-- Place for messages: error, alert etc ... -->
+                <div class="form-group">
+                    <div class="col-xs-15">
+                        <div>
+                            <!-- Check for login error -->
+                            <div th:if="${param.error}">
+                                <div class="alert alert-danger col-xs-offset-1 col-xs-10">
+                                    Invalid username and password.
+                                </div>
+                            </div>
+                            <!-- Check for logged out -->
+                            <div th:if="${param.logout}">
+                                <div class="alert alert-success col-xs-offset-1 col-xs-10">
+                                    You have been logged out!
+                                </div>
+                            </div>
+                            <!-- Alert Create new account success -->
+                            <div th:if="${param.message != null}">
+                                <div class="alert col-xs-offset-1 col-xs-10" th:classappend="${alert}" >
+                                    Create account success!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-					<!-- User name -->
-					<div class="wrap-input100 validate-input" data-validate = "Username is required">
-							<input class="input100" type="text" name="username" placeholder="Type your username">
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
+                <!-- User name -->
+                <div class="wrap-input100 validate-input" data-validate="Username is required">
+                    <input class="input100" type="text" name="username" placeholder="Type your username">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
 							<i class="fa fa-envelope" aria-hidden="true"></i>
 						</span>
-					</div>
+                </div>
 
-					<!-- Password -->
-					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-						<input class="input100" type="password" name="password" placeholder="Password">
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
+                <!-- Password -->
+                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                    <input class="input100" type="password" name="password" placeholder="Password">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
 							<i class="fa fa-lock" aria-hidden="true"></i>
 						</span>
-					</div>
-					
-					<div class="container-login100-form-btn">
-						<button class="login100-form-btn">
-							Login
-						</button>
-					</div>
+                </div>
 
-					<!-- forgot password -->
-<!--					<div class="text-center p-t-12">-->
-<!--						<span class="txt1">-->
-<!--							Forgot-->
-<!--						</span>-->
-<!--						<a class="txt2" th:href="@{#}">-->
-<!--							Username / Password?-->
-<!--						</a>-->
-<!--					</div>-->
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn" id="btnLogin">
+                        Login
+                    </button>
+                </div>
 
-					<!-- Create new account -->
-					<div class="text-center p-t-136">
-						<a class="txt2" th:href="@{/showRegisterForm}">
-							Create your Account
-							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-						</a>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	
-	
+                <!-- forgot password -->
+                <!--					<div class="text-center p-t-12">-->
+                <!--						<span class="txt1">-->
+                <!--							Forgot-->
+                <!--						</span>-->
+                <!--						<a class="txt2" th:href="@{#}">-->
+                <!--							Username / Password?-->
+                <!--						</a>-->
+                <!--					</div>-->
 
-	
-<!--===============================================================================================-->	
-	<script th:src="@{/assets/login/login/vendor/jquery/jquery-3.2.1.min.js}"></script>
+                <!-- Create new account -->
+                <div class="text-center p-t-136">
+                    <a class="txt2" th:href="@{/showRegisterForm}">
+                        Create your Account
+                        <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 <!--===============================================================================================-->
-	<script th:src="@{/assets/login/login/vendor/bootstrap/js/popper.js}"></script>
-	<script th:src="@{/assets/login/login/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/assets/login/login/vendor/jquery/jquery-3.2.1.min.js}"></script>
 <!--===============================================================================================-->
-	<script th:src="@{/assets/login/login/vendor/select2/select2.min.js}"></script>
+<script th:src="@{/assets/login/login/vendor/bootstrap/js/popper.js}"></script>
+<script th:src="@{/assets/login/login/vendor/bootstrap/js/bootstrap.min.js}"></script>
 <!--===============================================================================================-->
-	<script th:src="@{/assets/login/login/vendor/tilt/tilt.jquery.min.js}"></script>
-	<script >
-		$('.js-tilt').tilt({
-			scale: 1.1
-		})
-	</script>
+<script th:src="@{/assets/login/login/vendor/select2/select2.min.js}"></script>
 <!--===============================================================================================-->
-	<script th:src="@{/assets/login/login/js/main.js}"></script>
+<script th:src="@{/assets/login/login/vendor/tilt/tilt.jquery.min.js}"></script>
+<script>
+    $('.js-tilt').tilt({
+        scale: 1.1
+    })
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/assets/login/login/js/main.js}"></script>
+
+<script type="text/javascript">
+    var apiGenerateToken = '/educationweb/api/auth/token'
+    var apiAdminSide = '/educationweb/admin'
+
+    $('#btnLogin').click(function (e) {
+        e.preventDefault();
+        // array => javascript object
+        var data = {};
+        var formData = $('#formLogin').serializeArray();
+        $.each(formData, function (i, v) {
+            // { "categoryCode" : "the-gioi"}
+            data["" + v.name + ""] = v.value;
+        });
+        // data["content"] = editor.getData(); // get fieldContent by new textarea (CKEDITOR)
+
+        $.ajax({
+            url: apiGenerateToken,
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (response) {
+                // Extract the token from the response
+                var token = response.result.token;
+
+                // Store the token in localStorage with the key 'Token'
+                localStorage.setItem('token', token);
+
+                // Go to admin page
+            },
+            error: function (xhr, status, error) {
+                // Check if responseJSON exists
+                var errorResponse = xhr.responseJSON; // Extract JSON response
+                alert("Login fail!");
+                // Ensure the response contains the expected fields
+                if (errorResponse && errorResponse.message) {
+                    // Extract the message from the response
+                    var errorMessage = errorResponse.message;
+
+                    // TODO: create #error-message on HTML page
+                    // Display the error message on the HTML page
+                    $('#error-message').text(errorMessage); // Assuming you have an element with id 'error-message'
+                } else {
+                    $('#error-message').text("An unknown error occurred.");
+                }
+            }
+        });
+
+        /* TODO: fix this*/
+        // Function to verify the token and log in the user
+        function verifyTokenAndLogin(token) {
+            // make AJAX call to a verification endpoint
+            $.ajax({
+                url: '/educationweb/api/auth/introspect',  // Endpoint for token verification
+                type: 'POST',
+                contentType: "application/json",
+                headers: {
+                    'Authorization': 'Bearer ' + token  // Include token in Authorization header
+                },
+                success: function (verificationResponse) {
+                    // Handle successful verification, e.g., update UI to logged-in state
+                    if (verificationResponse.result.isValid()) {
+                        alert("Login successful!");
+                        // Update UI, load user data, etc.
+                    } else {
+                        alert("Login failed: Invalid token.");
+                    }
+                },
+                error: function (error) {
+                    // Handle verification error
+                    alert("Verification failed: Unable to verify token.");
+                }
+            });
+        }
+
+
+    });
+
+</script>
 
 </body>
 </html>
